@@ -33,6 +33,10 @@ Este projeto é uma implementação em PHP para integração com o serviço SOAP
     ```
 2. Configure as variáveis de ambiente no arquivo `.env` conforme necessário.
 
+3. Se usar no Laravel publicar o arquivo de configuração no diretório config
+```php artisan vendor:publish --provider="TotvsRmSoap\Providers\TotvsRmSoapProvider" --tag="config"```
+
+
 ## Uso
 
 Para utilizar o serviço SOAP, você pode instanciar a classe `WebService` e chamar os métodos disponíveis. Veja um exemplo básico abaixo:

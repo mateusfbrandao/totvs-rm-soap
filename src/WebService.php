@@ -8,7 +8,7 @@ use TotvsRmSoap\Services\FormulaVisual;
 use TotvsRmSoap\Services\Process;
 use TotvsRmSoap\Services\Report;
 
-class TotvsRM
+class WebService
 {
     public function __construct(
         protected DataServer $dataServer,
