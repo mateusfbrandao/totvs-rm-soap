@@ -2,6 +2,12 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [2.0.1] - 2026-02-05
+### Corrigido
+- Verificação de existência do arquivo `.env` antes do carregamento para evitar erros em instalações via Composer (compatibilidade com Laravel).
+- Correção de namespaces em `TotvsRmSoapProvider`.
+- Adição da classe `TotvsRM` que estava faltando.
+
 ## [2.0.0] - 2026-02-05
 ### Alterado
 - Namespace atualizado de `mateusfbi\TotvsRmSoap` para `TotvsRmSoap` (Breaking Change).

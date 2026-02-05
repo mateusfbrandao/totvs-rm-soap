@@ -29,7 +29,7 @@ class WebService
 
     public function __construct()
     {
-        if (!self::$_envLoaded) {
+        if (!self::$_envLoaded && file_exists(__DIR__ . "/../../.env")) {
             $dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
             $dotenv->load();
             self::$_envLoaded = true;

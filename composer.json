@@ -22,5 +22,12 @@
         "psr-4": {
             "TotvsRmSoap\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "TotvsRmSoap\\Providers\\TotvsRmSoapProvider"
+            ]
+        }
     }
 }
