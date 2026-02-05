@@ -2,6 +2,11 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [2.0.2] - 2026-02-05
+### Alterado
+- Renomeada a classe `TotvsRM` para `WebService` (Root) para melhor semântica.
+- Atualizado `TotvsRmSoapProvider` para refletir a mudança e tratar conflitos de nome.
+
 ## [2.0.1] - 2026-02-05
 ### Corrigido
 - Verificação de existência do arquivo `.env` antes do carregamento para evitar erros em instalações via Composer (compatibilidade com Laravel).
