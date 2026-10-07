@@ -2,100 +2,65 @@
 
 namespace TotvsRmSoap\Connection;
 
-use \SoapClient;
-use Dotenv\Dotenv;
+use TotvsRmSoap\Config\ConnectionConfig;
+use TotvsRmSoap\Exceptions\ConnectionException;
+use SoapClient;
 
 /**
- * Classe WebService
+ * Cria instâncias de SoapClient a partir de ConnectionConfig.
  *
- * Responsável por configurar e retornar uma instância do cliente SOAP para comunicação com
- * os serviços da Totvs RM. Essa classe realiza o carregamento das variáveis de ambiente a partir
- * de um arquivo .env e utiliza essas informações para configurar a conexão SOAP.
- *
- * É utilizada a biblioteca Dotenv para carregar as variáveis de ambiente a partir do diretório
- * base do projeto, permitindo a configuração dinâmica da URL, usuário e senha do serviço.
- *
- * @package TotvsRmSoap\Connection
+ * Framework-agnóstico: não depende de helpers do Laravel.
  */
 class WebService
 {
-    /**
-     * Construtor da classe WebService.
-     *
-     * Carrega as variáveis de ambiente utilizando a biblioteca Dotenv a partir do diretório base
-     * do projeto. Essas variáveis são utilizadas para configurar a conexão SOAP.
-     */
-    private static bool $_envLoaded = false;
+    public function __construct(
+        private readonly ConnectionConfig $config
+    ) {}
 
-    public function __construct()
+    public function getConfig(): ConnectionConfig
     {
-        if (!self::$_envLoaded && file_exists(__DIR__ . "/../../.env")) {
-            $dotenv = Dotenv::createImmutable(__DIR__ . "/../../");
-            $dotenv->load();
-            self::$_envLoaded = true;
-        }
+        return $this->config;
     }
 
     /**
-     * Retorna uma instância do SoapClient configurada para o endpoint especificado.
-     *
-     * Este método constrói a URL do serviço concatenando a variável de ambiente WS_URL com o
-     * caminho ($path) fornecido. Em seguida, cria e retorna uma instância do SoapClient
-     * com as seguintes opções:
-     * - 'login' e 'password': obtidos das variáveis de ambiente WS_USER e WS_PASS.
-     * - Autenticação básica.
-     * - Uso da versão SOAP 1.1.
-     * - Ativação do trace para debugar a requisição.
-     * - Configuração do stream context para lidar com conexões SSL sem verificação de peer.
-     *
-     * Em caso de erro na conexão, o método exibe uma mensagem de erro e encerra a execução.
-     *
-     * @param string $path Caminho relativo do serviço SOAP (parte do WSDL) a ser utilizado.
-     * @return SoapClient Instância do cliente SOAP configurada para realizar as requisições.
+     * @param string $path Caminho relativo do WSDL (ex.: /wsDataServer/MEX?wsdl)
      */
-    public function getClient(string $path): SoapClient
+    public function getClient(string $path, ?string $companyCode = null): SoapClient
     {
-        $url = $_ENV['WS_URL'] . $path;
+        $baseUrl = $this->config->resolveBaseUrl($companyCode);
+        $url = rtrim($baseUrl, '/') . $path;
+
         $options = [
-            'login'                 => $_ENV['WS_USER'],
-            'password'              => $_ENV['WS_PASS'],
-            'authentication'        => SOAP_AUTHENTICATION_BASIC,
-            'soap_version'          => SOAP_1_1,
-            'trace'                 => true,
-            'exceptions'            => true,
-            'connection_timeout'    => 30,
-            "stream_context" 	    => stream_context_create(
-                [
-                    'ssl' => [
-                        // ATENÇÃO: Em produção, é ALTAMENTE recomendado definir estas opções como true
-                        // e configurar corretamente os certificados CA para garantir a segurança SSL.
-                        // Para desenvolvimento, podem ser definidos como false no .env.
-                        'verify_peer'       => filter_var($_ENV['WS_SSL_VERIFY_PEER'] ?? true, FILTER_VALIDATE_BOOLEAN),
-                        'verify_peer_name'  => filter_var($_ENV['WS_SSL_VERIFY_PEER_NAME'] ?? true, FILTER_VALIDATE_BOOLEAN),
-                        'allow_self_signed' => filter_var($_ENV['WS_SSL_ALLOW_SELF_SIGNED'] ?? false, FILTER_VALIDATE_BOOLEAN)
-                    ]
-                ]
-            )
+            'login' => $this->config->user,
+            'password' => $this->config->pass,
+            'authentication' => SOAP_AUTHENTICATION_BASIC,
+            'soap_version' => SOAP_1_1,
+            'trace' => true,
+            'exceptions' => true,
+            'connection_timeout' => $this->config->connectionTimeout,
+            'stream_context' => stream_context_create([
+                'ssl' => [
+                    // Em produção, mantenha verify_peer/verify_peer_name como true
+                    // e configure os certificados CA corretamente.
+                    'verify_peer' => $this->config->verifyPeer,
+                    'verify_peer_name' => $this->config->verifyPeerName,
+                    'allow_self_signed' => $this->config->allowSelfSigned,
+                ],
+            ]),
         ];
+
         return $this->createSoapClient($url, $options);
     }
 
     /**
-     * Método auxiliar para criar uma instância do SoapClient e tratar exceções.
-     *
-     * @param string $url URL completa do serviço SOAP.
-     * @param array $options Opções para o SoapClient.
-     * @return \SoapClient Instância do cliente SOAP.
-     * @throws \RuntimeException Se houver um erro na conexão com o servidor SOAP.
+     * @param array<string, mixed> $options
      */
-    private function createSoapClient(string $url, array $options): \SoapClient
+    private function createSoapClient(string $url, array $options): SoapClient
     {
         try {
-            return new \SoapClient($url, $options);
+            return new SoapClient($url, $options);
         } catch (\Exception $e) {
-            $errorMessage = 'Erro: Não foi possível conectar ao servidor do RM. URL: ' . $url . ' - ' . $e->getMessage();
-            error_log($errorMessage);
-            throw new \RuntimeException($errorMessage, 0, $e);
+            throw ConnectionException::forUrl($url, $e->getMessage());
         }
     }
 }

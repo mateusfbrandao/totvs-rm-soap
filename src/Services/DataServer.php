@@ -2,10 +2,9 @@
 
 namespace TotvsRmSoap\Services;
 
-use TotvsRmSoap\Services\AbstractService;
-
 use TotvsRmSoap\Connection\WebService;
 use TotvsRmSoap\Utils\Serialize;
+use TotvsRmSoap\Traits\WebServiceCaller;
 
 /**
  * Classe DataServer
@@ -16,8 +15,13 @@ use TotvsRmSoap\Utils\Serialize;
  *
  * @package TotvsRmSoap\Services
  */
-class DataServer extends AbstractService
+class DataServer
 {
+    use WebServiceCaller;
+
+    private WebService $connection;
+    private $webService;
+    private string $endpointPath = '/wsDataServer/MEX?wsdl';
     private string $dataServer;
     private string $primaryKey;
     private string $contexto;
@@ -33,7 +37,17 @@ class DataServer extends AbstractService
      */
     public function __construct(WebService $webService)
     {
-        $this->webService = $webService->getClient('/wsDataServer/MEX?wsdl');
+        $this->connection = $webService;
+        $this->webService = $webService->getClient($this->endpointPath);
+    }
+
+    /**
+     * Seleciona a empresa (coligada) para definir a URL base do serviço.
+     */
+    public function forCompany(string $companyCode): self
+    {
+        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
+        return $this;
     }
 
     /**
@@ -80,7 +94,6 @@ class DataServer extends AbstractService
         $this->filtro = $filtro;
     }
 
-
     /**
      * Define diretamente o XML da requisição do DataServer.
      *
@@ -91,7 +104,7 @@ class DataServer extends AbstractService
     {
         return $this->xml = $xml;
     }
-
+    
     /**
      * Monta o XML da requisição do DataServer a partir de um array.
      *

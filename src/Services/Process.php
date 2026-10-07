@@ -2,10 +2,8 @@
 
 namespace TotvsRmSoap\Services;
 
-use TotvsRmSoap\Services\AbstractService;
-
 use TotvsRmSoap\Connection\WebService;
-
+use TotvsRmSoap\Traits\WebServiceCaller;
 
 /**
  * Classe Process
@@ -18,8 +16,13 @@ use TotvsRmSoap\Connection\WebService;
  *
  * @package TotvsRmSoap\Services
  */
-class Process extends AbstractService
+class Process
 {
+    use WebServiceCaller;
+
+    private WebService $connection;
+    private $webService;
+    private string $endpointPath = '/wsProcess/MEX?wsdl';
     private string $process;
     private string $xml;
     private string $jobId;
@@ -35,7 +38,17 @@ class Process extends AbstractService
      */
     public function __construct(WebService $webService)
     {
-        $this->webService = $webService->getClient('/wsProcess/MEX?wsdl');
+        $this->connection = $webService;
+        $this->webService = $webService->getClient($this->endpointPath);
+    }
+
+    /**
+     * Seleciona a empresa (coligada) para definir a URL base do serviço.
+     */
+    public function forCompany(string $companyCode): self
+    {
+        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
+        return $this;
     }
 
     /**
@@ -81,8 +94,6 @@ class Process extends AbstractService
     {
         $this->execId = $execId;
     }
-
-    
 
     /**
      * Executa o processo utilizando os parâmetros em formato XML.

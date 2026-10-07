@@ -2,6 +2,22 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [3.0.0] - 2026-10-07
+### Alterado
+- Core framework-agnóstico via `ConnectionConfig` (sem dependência de `config()`/`env()` helpers).
+- Removidas dependências `vlucas/phpdotenv` e `spatie/array-to-xml`.
+- PHP mínimo elevado para `^8.2`.
+- Pacote `mateusfbi/totvs-rm-soap-laravel` unificado neste (`replace` + abandoned no pacote Laravel).
+
+### Adicionado
+- Integração Laravel opcional (Provider, Facade, aliases `totvs.*`).
+- Suporte a URL por empresa (`forCompany` / `companies`).
+- Suite de testes PHPUnit (unitários + integração opcional).
+
+### Breaking
+- `WebService` agora exige `ConnectionConfig` no construtor (PHP puro).
+- Consumidores do antigo `-laravel` devem trocar o pacote Composer e o namespace `mateusfbi\TotvsRmSoap\` → `TotvsRmSoap\`.
+
 ## [2.0.2] - 2026-02-05
 ### Alterado
 - Renomeada a classe `TotvsRM` para `WebService` (Root) para melhor semântica.

@@ -2,10 +2,9 @@
 
 namespace TotvsRmSoap\Services;
 
-use TotvsRmSoap\Services\AbstractService;
-
 use TotvsRmSoap\Connection\WebService;
 use TotvsRmSoap\Utils\Serialize;
+use TotvsRmSoap\Traits\WebServiceCaller;
 
 /**
  * Classe ConsultaSQL
@@ -17,10 +16,15 @@ use TotvsRmSoap\Utils\Serialize;
  * @package TotvsRmSoap\Services
  */
 
-class ConsultaSQL extends AbstractService
+class ConsultaSQL
 {
-    private string $codSentenca;
-    private string $coligada;
+    use WebServiceCaller;
+
+    private WebService $connection;
+    private $webService;
+    private string $endpointPath = '/wsConsultaSQL/MEX?wsdl';
+    private string $sentenca;
+    private int $coligada;
     private string $sistema;
     private string $parametros;
 
@@ -32,21 +36,30 @@ class ConsultaSQL extends AbstractService
      *
      * @param WebService $webService Instância do serviço web utilizada para conectar ao endpoint SOAP.
      */
-
     public function __construct(WebService $webService)
     {
-        $this->webService = $webService->getClient('/wsConsultaSQL/MEX?wsdl');
+        $this->connection = $webService;
+        $this->webService = $webService->getClient($this->endpointPath);
+    }
+
+    /**
+     * Seleciona a empresa (coligada) para definir a URL base do serviço.
+     */
+    public function forCompany(string $companyCode): self
+    {
+        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
+        return $this;
     }
 
     /**
      * Define a sentença SQL para a consulta.
      *
-     * @param string $codSentenca Código da Sentença SQL a ser utilizada.
+     * @param string $sentenca Código da Sentença SQL a ser utilizada.
      * @return void
      */
-    public function setCodSentenca(string $codSentenca): void
+    public function setSentenca(string $sentenca): void
     {
-        $this->codSentenca = $codSentenca;
+        $this->sentenca = $sentenca;
     }
 
     /**
@@ -91,8 +104,6 @@ class ConsultaSQL extends AbstractService
         $this->parametros = implode(';', $array);
     }
 
-    
-
     /**
      * Realiza a consulta SQL através do serviço SOAP.
      *
@@ -108,7 +119,7 @@ class ConsultaSQL extends AbstractService
     public function RealizarConsultaSQL(): array
     {
         $params = [
-            'codSentenca' => $this->codSentenca,
+            'codSentenca' => $this->sentenca,
             'codColigada' => $this->coligada,
             'codSistema' => $this->sistema,
             'parameters' => empty($this->parametros) ? null : $this->parametros,

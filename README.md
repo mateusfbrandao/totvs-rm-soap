@@ -1,72 +1,143 @@
 # TotvsRmSoap
 
-Este projeto é uma implementação em PHP para integração com o serviço SOAP da Totvs RM.
+Biblioteca PHP para integração SOAP com o TOTVS RM. Funciona com **Laravel** (Provider/Facade) ou **PHP puro** / qualquer framework.
+
+> **Nota:** o pacote `mateusfbi/totvs-rm-soap-laravel` foi unificado neste. Migre para `mateusfbi/totvs-rm-soap` e use o namespace `TotvsRmSoap\`.
 
 ## Requisitos
 
-- PHP 8.0 ou superior
-- Extensão SOAP do PHP
-- Extensão XML do PHP
+- PHP 8.2 ou superior
+- Extensões SOAP e XML do PHP
 - Composer
+- Laravel (opcional — apenas se for usar Provider/Facade)
 
 ## Instalação
 
-1. Instale com o Composer:
-    ```sh
-    composer require mateusfbi/totvs-rm-soap
-    ```
-2. Instale importando o projeto via git:
-- Clone o repositório:
-    ```sh
-    git clone https://github.com/mateusfbi/totvs-rm-soap.git
-    ```
-- Instale as dependências via Composer:
-    ```sh
-    composer install
-    ```
+```bash
+composer require mateusfbi/totvs-rm-soap
+```
 
-## Configuração
+### Migrando de `totvs-rm-soap-laravel`
 
-1. Renomeie o arquivo `.env.example` para `.env`:
-    ```sh
-    mv .env.example .env
-    ```
-2. Configure as variáveis de ambiente no arquivo `.env` conforme necessário.
+```bash
+composer remove mateusfbi/totvs-rm-soap-laravel
+composer require mateusfbi/totvs-rm-soap
+```
 
-3. Se usar no Laravel publicar o arquivo de configuração no diretório config
-```php artisan vendor:publish --provider="TotvsRmSoap\Providers\TotvsRmSoapProvider" --tag="config"```
+No código, troque o namespace:
 
+```diff
+- use mateusfbi\TotvsRmSoap\Services\DataServer;
++ use TotvsRmSoap\Services\DataServer;
+```
 
-## Uso
+### Laravel
 
-Para utilizar o serviço SOAP, você pode instanciar a classe `WebService` e chamar os métodos disponíveis. Veja um exemplo básico abaixo:
+```bash
+php artisan vendor:publish --tag=config
+```
+
+## Configuração (Laravel)
+
+Variáveis no `.env`:
+
+```
+TOTVSRM_WSURL=http://localhost:8051
+TOTVSRM_USER=usuario
+TOTVSRM_PASS=senha
+TOTVSRM_CONNECTION_TIMEOUT=1800
+```
+
+URL por empresa em `config/totvsrmsoap.php`:
 
 ```php
-include_once __DIR__ . '/vendor/autoload.php';
+'companies' => [
+    '01' => 'http://rm-empresa01:8051',
+    '02' => 'http://rm-empresa02:8051',
+],
+```
 
+Ou via `.env`:
+
+```
+TOTVSRM_COMPANIES="01|http://rm-empresa01:8051;02|http://rm-empresa02:8051"
+```
+
+## Uso com PHP puro
+
+```php
+use TotvsRmSoap\Config\ConnectionConfig;
 use TotvsRmSoap\Connection\WebService;
 use TotvsRmSoap\Services\DataServer;
+use TotvsRmSoap\Services\ConsultaSQL;
 
-echo "<pre>";
+$config = new ConnectionConfig(
+    url: 'http://localhost:8051',
+    user: 'usuario',
+    pass: 'senha',
+    companies: [
+        '01' => 'http://rm-empresa01:8051',
+    ],
+);
 
-    $ds =  new  DataServer(new WebService);
-    $ds->setDataServer("GlbColigadaDataBR");
-    $ds->setContexto("CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre");
-    $ds->setFiltro("1=1");
-    $result = $ds->readView();
+$connection = new WebService($config);
 
-    if(array_key_exists('GColigada',$result)){
-        $result = $result['GColigada'];
-    }else{
-        $result = [];
-    }
+$ds = new DataServer($connection);
+$ds->setDataServer('GlbColigadaDataBR');
+$ds->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre');
+$ds->setFiltro('1=1');
+$result = $ds->readView();
 
-    var_dump($result);
+$sql = (new ConsultaSQL($connection))->forCompany('01');
+$sql->setSentenca('SENTENCA_EXEMPLO');
+$sql->setColigada(1);
+$sql->setSistema('G');
+$sql->setParametros(['P1' => 'VALOR']);
+$res = $sql->RealizarConsultaSQL();
+```
 
-echo "</pre>";
+Há um exemplo em `index.php`.
 
+## Uso com Laravel
+
+### Injeção de dependência
+
+```php
+use TotvsRmSoap\Services\DataServer;
+
+$ds->setDataServer('GlbColigadaDataBR');
+$ds->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre');
+$ds->setFiltro('1=1');
+$result = $ds->readView();
+```
+
+### Helper `app()` / Facade
+
+Aliases: `totvs.data_server`, `totvs.consulta_sql`, `totvs.report`, `totvs.process`, `totvs.formula_visual`
+
+```php
+use TotvsRmSoap\Facades\TotvsRM;
+
+$ds = TotvsRM::dataServer()->forCompany('01');
+```
+
+## Testes
+
+```bash
+composer install
+composer test
+```
+
+Integração (RM real):
+
+```bash
+export TOTVSRM_RUN_INTEGRATION=1
+export TOTVSRM_WSURL=http://localhost:8051
+export TOTVSRM_USER=usuario
+export TOTVSRM_PASS=senha
+composer test:integration
 ```
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.

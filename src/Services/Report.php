@@ -2,9 +2,8 @@
 
 namespace TotvsRmSoap\Services;
 
-use TotvsRmSoap\Services\AbstractService;
-
 use TotvsRmSoap\Connection\WebService;
+use TotvsRmSoap\Traits\WebServiceCaller;
 use \DOMDocument;
 
 /**
@@ -23,8 +22,13 @@ use \DOMDocument;
  * @package TotvsRmSoap\Services
  */
 
-class Report extends AbstractService
+class Report
 {
+    use WebServiceCaller;
+
+    private WebService $connection;
+    private $webService;
+    private string $endpointPath = '/wsReport/MEX?wsdl';
     private int $coligada;
     private int $id;
     private string $filtro;
@@ -44,7 +48,17 @@ class Report extends AbstractService
      */
     public function __construct(WebService $webService)
     {
-        $this->webService = $webService->getClient('/wsReport/MEX?wsdl');
+        $this->connection = $webService;
+        $this->webService = $webService->getClient($this->endpointPath);
+    }
+
+    /**
+     * Seleciona a empresa (coligada) para definir a URL base do serviço.
+     */
+    public function forCompany(string $companyCode): self
+    {
+        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
+        return $this;
     }
 
     /**
@@ -146,8 +160,8 @@ class Report extends AbstractService
     public function setFiltro(array $filtros = []): void
     {
 		// 1. Inicializa o objeto DOMDocument
-		$dom = new DOMDocument('1.0', 'utf-16');
-		$dom->formatOutput = true; // ATENÇÃO: Para produção, considere definir como false para otimização de performance (reduz tamanho do XML).
+		$dom = new DOMDocument('1.0', 'UTF-8');
+		$dom->formatOutput = true; // Formata o XML para melhor legibilidade
 		$dom->preserveWhiteSpace = false;
 
 		// 2. Cria o elemento raiz <ArrayOfRptFilterReportPar> com seus namespaces
@@ -225,7 +239,7 @@ class Report extends AbstractService
     {
         // 1. Inicializa o DOMDocument, a ferramenta correta para XML complexo.
         $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true; // ATENÇÃO: Para produção, considere definir como false para otimização de performance (reduz tamanho do XML).
+        $dom->formatOutput = true; // Formata a saída para ser legível.
         $dom->preserveWhiteSpace = false;
 
         // 2. Define os URIs dos namespaces para reutilização e legibilidade.
@@ -316,9 +330,6 @@ class Report extends AbstractService
      */
     public function getReportList(): array
     {
-        // ATENÇÃO: A análise desta string é frágil e depende de um formato exato.
-        // Se possível, verifique se o serviço SOAP pode retornar os dados em XML
-        // para uma análise mais robusta e menos propensa a erros.
         $rawResult = $this->callWebServiceMethod('GetReportList', ['codColigada' => $this->coligada], '');
         $return = [];
 
@@ -357,8 +368,6 @@ class Report extends AbstractService
         return $return;
     }
 
-    
-
     /**
      * Gera o relatório através do serviço SOAP.
      *
@@ -372,10 +381,10 @@ class Report extends AbstractService
         $params = [
             'codColigada' => $this->coligada,
             'id'          => $this->id,
-            'filters'     => empty($this->filtro) ? null : $this->filtro,
-            'parameters'  => empty($this->parametros) ? null : $this->parametros,
+            'filters'     => $this->filtro,
+            'parameters'  => $this->parametros,
             'fileName'    => $this->nomeArquivo,
-            'contexto'    => empty($this->contexto) ? null : $this->contexto,
+            'contexto'    => $this->contexto,
         ];
         return $this->callWebServiceMethod('GenerateReport', $params, '');
     }
@@ -437,8 +446,8 @@ class Report extends AbstractService
     /**
      * Obtém o status do relatório gerado.
      *
-     * Envia uma requisição SOAP usando o identificador do relatório (id) para recuperar
-     * o status do relatório gerado.
+     * Envia uma requisição SOAP usando o guid para recuperar
+     * o status do relatório gerado pelo generateReportAsynchronous.
      *
      * @return string Status do relatório.
      */

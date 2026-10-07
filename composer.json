@@ -1,7 +1,7 @@
 {
     "name": "mateusfbi/totvs-rm-soap",
-    "description": "Conexão SOAP para integração com TOTVS RM",
-    "keywords": ["soap", "totvs", "rm"],
+    "description": "Biblioteca SOAP para integração com TOTVS RM — funciona com Laravel ou PHP puro",
+    "keywords": ["soap", "totvs", "rm", "laravel", "totvs-rm", "php"],
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -11,23 +11,41 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "vlucas/phpdotenv": "^5.6",
-        "spatie/array-to-xml": "^3.4"
+        "php": "^8.2",
+        "ext-soap": "*",
+        "ext-xml": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^12.0"
+        "phpunit/phpunit": "^11.0"
+    },
+    "replace": {
+        "mateusfbi/totvs-rm-soap-laravel": "self.version"
+    },
+    "suggest": {
+        "illuminate/support": "Necessário apenas para usar o Service Provider e a Facade no Laravel"
     },
     "autoload": {
         "psr-4": {
             "TotvsRmSoap\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "TotvsRmSoap\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:integration": "phpunit --group integration"
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "TotvsRmSoap\\Providers\\TotvsRmSoapProvider"
-            ]
+            ],
+            "aliases": {
+                "TotvsRM": "TotvsRmSoap\\Facades\\TotvsRM"
+            }
         }
     }
 }

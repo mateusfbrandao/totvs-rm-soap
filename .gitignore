@@ -4,3 +4,7 @@ vendor/*
 .env
 index.php
 composer.lock
+.phpunit.cache
+.phpunit.result.cache
+parametros_debug.xml
+reports.php

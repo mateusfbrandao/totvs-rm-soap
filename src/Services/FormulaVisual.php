@@ -2,9 +2,8 @@
 
 namespace TotvsRmSoap\Services;
 
-use TotvsRmSoap\Services\AbstractService;
-
 use TotvsRmSoap\Connection\WebService;
+use TotvsRmSoap\Traits\WebServiceCaller;
 
 /**
  * Classe FormulaVisual
@@ -15,10 +14,15 @@ use TotvsRmSoap\Connection\WebService;
  *
  * @package TotvsRmSoap\Services
  */
-class FormulaVisual extends AbstractService
+class FormulaVisual
 {
+    use WebServiceCaller;
+
+    private WebService $connection;
+    private $webService;
+    private string $endpointPath = '/wsFormulaVisual/MEX?wsdl';
     private string $idFormula;
-    private string $coligada;
+    private int $coligada;
     private string $contexto;
     private string $paramXML;
 
@@ -32,7 +36,17 @@ class FormulaVisual extends AbstractService
      */
     public function __construct(WebService $webService)
     {
-        $this->webService = $webService->getClient('/wsFormulaVisual/MEX?wsdl');
+        $this->connection = $webService;
+        $this->webService = $webService->getClient($this->endpointPath);
+    }
+
+    /**
+     * Seleciona a empresa (coligada) para definir a URL base do serviço.
+     */
+    public function forCompany(string $companyCode): self
+    {
+        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
+        return $this;
     }
 
     /**
@@ -101,6 +115,4 @@ class FormulaVisual extends AbstractService
         ];
         return (int) $this->callWebServiceMethod('Execute', $params, 0);
     }
-
-    
 }
