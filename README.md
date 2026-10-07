@@ -26,8 +26,6 @@ composer require mateusfbi/totvs-rm-soap
 
 O namespace **`mateusfbi\TotvsRmSoap\`** permanece o mesmo — em geral não é preciso alterar os `use`.
 
-Quem já usava o namespace curto `TotvsRmSoap\` (v2.x / v3.0.0) continua funcionando via aliases de compatibilidade.
-
 ### Laravel
 
 ```bash

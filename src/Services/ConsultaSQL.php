@@ -13,7 +13,7 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  * Essa classe prepara os parâmetros da consulta e invoca o serviço SOAP específico
  * para execução da sentença SQL, retornando o resultado processado.
  *
- * @package TotvsRmSoap\Services
+ * @package mateusfbi\TotvsRmSoap\Services
  */
 
 class ConsultaSQL

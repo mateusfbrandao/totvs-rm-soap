@@ -12,7 +12,7 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  * Essa classe configura os parâmetros necessários (como a fórmula, coligada, contexto e XML de parâmetros),
  * invoca o serviço SOAP e retorna o resultado da execução.
  *
- * @package TotvsRmSoap\Services
+ * @package mateusfbi\TotvsRmSoap\Services
  */
 class FormulaVisual
 {

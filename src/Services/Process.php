@@ -14,7 +14,7 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  * trata a resposta utilizando a utilidade de serialização. Ela é projetada para centralizar
  * toda lógica de processamento, facilitando a manutenção e extensibilidade do código.
  *
- * @package TotvsRmSoap\Services
+ * @package mateusfbi\TotvsRmSoap\Services
  */
 class Process
 {

@@ -27,10 +27,7 @@
     "autoload": {
         "psr-4": {
             "mateusfbi\\TotvsRmSoap\\": "src/"
-        },
-        "files": [
-            "src/compatibility.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

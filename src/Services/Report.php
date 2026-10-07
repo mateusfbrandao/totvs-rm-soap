@@ -19,7 +19,7 @@ use \DOMDocument;
  *   - Obter a lista de relatórios.
  *   - Obter status, metadados, informações, tamanho, hash e chunks do arquivo gerado.
  *
- * @package TotvsRmSoap\Services
+ * @package mateusfbi\TotvsRmSoap\Services
  */
 
 class Report

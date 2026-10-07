@@ -2,10 +2,13 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [3.0.2] - 2026-10-07
+### Removido
+- Aliases de compatibilidade do namespace curto `TotvsRmSoap\`. Use apenas `mateusfbi\TotvsRmSoap\`.
+
 ## [3.0.1] - 2026-10-07
 ### Alterado
 - Namespace canônico volta a ser `mateusfbi\TotvsRmSoap\` (mesmo do antigo `-laravel`), reduzindo impacto na migração.
-- Aliases de compatibilidade para `TotvsRmSoap\` (código da v2.x / v3.0.0).
 
 ## [3.0.0] - 2026-10-07
 ### Alterado

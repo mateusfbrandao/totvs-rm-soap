@@ -13,7 +13,7 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  * realizar operações de persistência, leitura e exclusão de registros, além de montar
  * o XML necessário para algumas requisições.
  *
- * @package TotvsRmSoap\Services
+ * @package mateusfbi\TotvsRmSoap\Services
  */
 class DataServer
 {
