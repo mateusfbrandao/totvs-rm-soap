@@ -1,9 +1,9 @@
 <?php
 
-namespace TotvsRmSoap\Services;
+namespace mateusfbi\TotvsRmSoap\Services;
 
-use TotvsRmSoap\Connection\WebService;
-use TotvsRmSoap\Traits\WebServiceCaller;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
 
 /**
  * Classe Process

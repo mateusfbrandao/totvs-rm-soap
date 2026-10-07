@@ -1,10 +1,10 @@
 <?php
 
-namespace TotvsRmSoap\Services;
+namespace mateusfbi\TotvsRmSoap\Services;
 
-use TotvsRmSoap\Connection\WebService;
-use TotvsRmSoap\Utils\Serialize;
-use TotvsRmSoap\Traits\WebServiceCaller;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Utils\Serialize;
+use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
 
 /**
  * Classe ConsultaSQL

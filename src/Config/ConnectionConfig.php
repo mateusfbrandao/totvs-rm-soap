@@ -1,6 +1,6 @@
 <?php
 
-namespace TotvsRmSoap\Config;
+namespace mateusfbi\TotvsRmSoap\Config;
 
 /**
  * Configuração de conexão SOAP, independente de framework.

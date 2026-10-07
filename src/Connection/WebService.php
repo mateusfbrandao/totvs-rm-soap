@@ -1,9 +1,9 @@
 <?php
 
-namespace TotvsRmSoap\Connection;
+namespace mateusfbi\TotvsRmSoap\Connection;
 
-use TotvsRmSoap\Config\ConnectionConfig;
-use TotvsRmSoap\Exceptions\ConnectionException;
+use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Exceptions\ConnectionException;
 use SoapClient;
 
 /**

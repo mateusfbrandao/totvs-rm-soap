@@ -1,10 +1,10 @@
 <?php
 
-namespace TotvsRmSoap\Tests\Integration;
+namespace mateusfbi\TotvsRmSoap\Tests\Integration;
 
-use TotvsRmSoap\Config\ConnectionConfig;
-use TotvsRmSoap\Connection\WebService;
-use TotvsRmSoap\Services\ConsultaSQL;
+use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 

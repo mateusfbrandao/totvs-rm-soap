@@ -1,8 +1,8 @@
 <?php
 
-namespace TotvsRmSoap\Tests\Unit;
+namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
-use TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
 use PHPUnit\Framework\TestCase;
 
 class ConnectionConfigTest extends TestCase

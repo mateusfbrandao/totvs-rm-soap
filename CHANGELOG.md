@@ -2,6 +2,11 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [3.0.1] - 2026-10-07
+### Alterado
+- Namespace canônico volta a ser `mateusfbi\TotvsRmSoap\` (mesmo do antigo `-laravel`), reduzindo impacto na migração.
+- Aliases de compatibilidade para `TotvsRmSoap\` (código da v2.x / v3.0.0).
+
 ## [3.0.0] - 2026-10-07
 ### Alterado
 - Core framework-agnóstico via `ConnectionConfig` (sem dependência de `config()`/`env()` helpers).
@@ -16,7 +21,7 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 ### Breaking
 - `WebService` agora exige `ConnectionConfig` no construtor (PHP puro).
-- Consumidores do antigo `-laravel` devem trocar o pacote Composer e o namespace `mateusfbi\TotvsRmSoap\` → `TotvsRmSoap\`.
+- Consumidores do antigo `-laravel` devem trocar o pacote Composer; o namespace `mateusfbi\TotvsRmSoap\` é preservado a partir da v3.0.1.
 
 ## [2.0.2] - 2026-02-05
 ### Alterado

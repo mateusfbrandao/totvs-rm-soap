@@ -1,13 +1,13 @@
 <?php
 
-namespace TotvsRmSoap\Tests\Unit;
+namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
-use TotvsRmSoap\Connection\WebService;
-use TotvsRmSoap\Services\ConsultaSQL;
-use TotvsRmSoap\Services\DataServer;
-use TotvsRmSoap\Services\FormulaVisual;
-use TotvsRmSoap\Services\Process;
-use TotvsRmSoap\Services\Report;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
+use mateusfbi\TotvsRmSoap\Services\DataServer;
+use mateusfbi\TotvsRmSoap\Services\FormulaVisual;
+use mateusfbi\TotvsRmSoap\Services\Process;
+use mateusfbi\TotvsRmSoap\Services\Report;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use SoapClient;

@@ -1,9 +1,9 @@
 <?php
 
-namespace TotvsRmSoap\Traits;
+namespace mateusfbi\TotvsRmSoap\Traits;
 
 use Exception;
-use TotvsRmSoap\Exceptions\ConnectionException;
+use mateusfbi\TotvsRmSoap\Exceptions\ConnectionException;
 
 trait WebServiceCaller
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace TotvsRmSoap;
+namespace mateusfbi\TotvsRmSoap;
 
-use TotvsRmSoap\Services\ConsultaSQL;
-use TotvsRmSoap\Services\DataServer;
-use TotvsRmSoap\Services\FormulaVisual;
-use TotvsRmSoap\Services\Process;
-use TotvsRmSoap\Services\Report;
+use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
+use mateusfbi\TotvsRmSoap\Services\DataServer;
+use mateusfbi\TotvsRmSoap\Services\FormulaVisual;
+use mateusfbi\TotvsRmSoap\Services\Process;
+use mateusfbi\TotvsRmSoap\Services\Report;
 
 class TotvsRM
 {

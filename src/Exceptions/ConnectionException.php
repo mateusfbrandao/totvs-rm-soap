@@ -1,6 +1,6 @@
 <?php
 
-namespace TotvsRmSoap\Exceptions;
+namespace mateusfbi\TotvsRmSoap\Exceptions;
 
 use Exception;
 

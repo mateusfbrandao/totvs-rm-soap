@@ -1,9 +1,9 @@
 <?php
 
-namespace TotvsRmSoap\Tests\Unit;
+namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
-use TotvsRmSoap\Config\ConnectionConfig;
-use TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
 use PHPUnit\Framework\TestCase;
 
 class WebServiceTest extends TestCase

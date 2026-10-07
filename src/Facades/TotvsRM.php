@@ -1,15 +1,15 @@
 <?php
 
-namespace TotvsRmSoap\Facades;
+namespace mateusfbi\TotvsRmSoap\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \TotvsRmSoap\Services\DataServer dataServer()
- * @method static \TotvsRmSoap\Services\ConsultaSQL consultaSQL()
- * @method static \TotvsRmSoap\Services\Report report()
- * @method static \TotvsRmSoap\Services\Process process()
- * @method static \TotvsRmSoap\Services\FormulaVisual formulaVisual()
+ * @method static \mateusfbi\TotvsRmSoap\Services\DataServer dataServer()
+ * @method static \mateusfbi\TotvsRmSoap\Services\ConsultaSQL consultaSQL()
+ * @method static \mateusfbi\TotvsRmSoap\Services\Report report()
+ * @method static \mateusfbi\TotvsRmSoap\Services\Process process()
+ * @method static \mateusfbi\TotvsRmSoap\Services\FormulaVisual formulaVisual()
  */
 class TotvsRM extends Facade
 {

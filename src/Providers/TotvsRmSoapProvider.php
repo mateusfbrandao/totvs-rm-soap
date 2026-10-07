@@ -1,16 +1,16 @@
 <?php
 
-namespace TotvsRmSoap\Providers;
+namespace mateusfbi\TotvsRmSoap\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use TotvsRmSoap\Config\ConnectionConfig;
-use TotvsRmSoap\Connection\WebService;
-use TotvsRmSoap\Services\ConsultaSQL;
-use TotvsRmSoap\Services\DataServer;
-use TotvsRmSoap\Services\FormulaVisual;
-use TotvsRmSoap\Services\Process;
-use TotvsRmSoap\Services\Report;
-use TotvsRmSoap\TotvsRM;
+use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
+use mateusfbi\TotvsRmSoap\Services\DataServer;
+use mateusfbi\TotvsRmSoap\Services\FormulaVisual;
+use mateusfbi\TotvsRmSoap\Services\Process;
+use mateusfbi\TotvsRmSoap\Services\Report;
+use mateusfbi\TotvsRmSoap\TotvsRM;
 
 class TotvsRmSoapProvider extends ServiceProvider
 {

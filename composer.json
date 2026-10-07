@@ -26,12 +26,15 @@
     },
     "autoload": {
         "psr-4": {
-            "TotvsRmSoap\\": "src/"
-        }
+            "mateusfbi\\TotvsRmSoap\\": "src/"
+        },
+        "files": [
+            "src/compatibility.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "TotvsRmSoap\\Tests\\": "tests/"
+            "mateusfbi\\TotvsRmSoap\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -41,10 +44,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "TotvsRmSoap\\Providers\\TotvsRmSoapProvider"
+                "mateusfbi\\TotvsRmSoap\\Providers\\TotvsRmSoapProvider"
             ],
             "aliases": {
-                "TotvsRM": "TotvsRmSoap\\Facades\\TotvsRM"
+                "TotvsRM": "mateusfbi\\TotvsRmSoap\\Facades\\TotvsRM"
             }
         }
     }

@@ -2,7 +2,7 @@
 
 Biblioteca PHP para integração SOAP com o TOTVS RM. Funciona com **Laravel** (Provider/Facade) ou **PHP puro** / qualquer framework.
 
-> **Nota:** o pacote `mateusfbi/totvs-rm-soap-laravel` foi unificado neste. Migre para `mateusfbi/totvs-rm-soap` e use o namespace `TotvsRmSoap\`.
+> **Nota:** o pacote `mateusfbi/totvs-rm-soap-laravel` foi unificado neste. Migre para `mateusfbi/totvs-rm-soap`.
 
 ## Requisitos
 
@@ -24,12 +24,9 @@ composer remove mateusfbi/totvs-rm-soap-laravel
 composer require mateusfbi/totvs-rm-soap
 ```
 
-No código, troque o namespace:
+O namespace **`mateusfbi\TotvsRmSoap\`** permanece o mesmo — em geral não é preciso alterar os `use`.
 
-```diff
-- use mateusfbi\TotvsRmSoap\Services\DataServer;
-+ use TotvsRmSoap\Services\DataServer;
-```
+Quem já usava o namespace curto `TotvsRmSoap\` (v2.x / v3.0.0) continua funcionando via aliases de compatibilidade.
 
 ### Laravel
 
@@ -66,10 +63,10 @@ TOTVSRM_COMPANIES="01|http://rm-empresa01:8051;02|http://rm-empresa02:8051"
 ## Uso com PHP puro
 
 ```php
-use TotvsRmSoap\Config\ConnectionConfig;
-use TotvsRmSoap\Connection\WebService;
-use TotvsRmSoap\Services\DataServer;
-use TotvsRmSoap\Services\ConsultaSQL;
+use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\Services\DataServer;
+use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 
 $config = new ConnectionConfig(
     url: 'http://localhost:8051',
@@ -103,7 +100,7 @@ Há um exemplo em `index.php`.
 ### Injeção de dependência
 
 ```php
-use TotvsRmSoap\Services\DataServer;
+use mateusfbi\TotvsRmSoap\Services\DataServer;
 
 $ds->setDataServer('GlbColigadaDataBR');
 $ds->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre');
@@ -116,7 +113,7 @@ $result = $ds->readView();
 Aliases: `totvs.data_server`, `totvs.consulta_sql`, `totvs.report`, `totvs.process`, `totvs.formula_visual`
 
 ```php
-use TotvsRmSoap\Facades\TotvsRM;
+use mateusfbi\TotvsRmSoap\Facades\TotvsRM;
 
 $ds = TotvsRM::dataServer()->forCompany('01');
 ```

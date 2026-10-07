@@ -1,8 +1,8 @@
 <?php
 
-namespace TotvsRmSoap\Tests\Unit;
+namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
-use TotvsRmSoap\DataTransferObjects\Record;
+use mateusfbi\TotvsRmSoap\DataTransferObjects\Record;
 use PHPUnit\Framework\TestCase;
 
 class RecordTest extends TestCase

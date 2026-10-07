@@ -1,6 +1,6 @@
 <?php
 
-namespace TotvsRmSoap\DataTransferObjects;
+namespace mateusfbi\TotvsRmSoap\DataTransferObjects;
 
 class ReadViewParams
 {
