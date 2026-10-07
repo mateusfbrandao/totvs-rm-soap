@@ -2,7 +2,7 @@
 
 namespace mateusfbi\TotvsRmSoap\Tests\Integration;
 
-use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\Config;
 use mateusfbi\TotvsRmSoap\Connection\WebService;
 use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,11 +32,11 @@ class ConsultaSQLIntegrationTest extends TestCase
     {
         $sentenca = getenv('TOTVSRM_TEST_SENTENCA') ?: 'WORKDAY.002';
 
-        $config = new ConnectionConfig(
+        $config = new Config(
             url: (string) getenv('TOTVSRM_WSURL'),
             user: (string) getenv('TOTVSRM_USER'),
             pass: (string) getenv('TOTVSRM_PASS'),
-            companies: ConnectionConfig::normalizeCompanies(getenv('TOTVSRM_COMPANIES') ?: null),
+            companies: Config::normalizeCompanies(getenv('TOTVSRM_COMPANIES') ?: null),
             connectionTimeout: (int) (getenv('TOTVSRM_CONNECTION_TIMEOUT') ?: 30),
         );
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace mateusfbi\TotvsRmSoap\Config;
+namespace mateusfbi\TotvsRmSoap\Connection;
 
 /**
  * Configuração de conexão SOAP, independente de framework.
  */
-final class ConnectionConfig
+final class Config
 {
     /**
      * @param array<string, string> $companies Mapa coligada => URL base

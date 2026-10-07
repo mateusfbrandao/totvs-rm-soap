@@ -2,14 +2,14 @@
 
 namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
-use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\Config;
 use PHPUnit\Framework\TestCase;
 
-class ConnectionConfigTest extends TestCase
+class ConfigTest extends TestCase
 {
     public function testFromArrayMapsKnownKeysAndDefaults(): void
     {
-        $config = ConnectionConfig::fromArray([
+        $config = Config::fromArray([
             'url' => 'http://rm.local:8051',
             'user' => 'mestre',
             'pass' => 'secret',
@@ -27,7 +27,7 @@ class ConnectionConfigTest extends TestCase
 
     public function testFromArrayParsesBooleanStringsAndTimeout(): void
     {
-        $config = ConnectionConfig::fromArray([
+        $config = Config::fromArray([
             'url' => 'http://rm.local',
             'user' => 'u',
             'pass' => 'p',
@@ -45,7 +45,7 @@ class ConnectionConfigTest extends TestCase
 
     public function testNormalizeCompaniesFromArray(): void
     {
-        $map = ConnectionConfig::normalizeCompanies([
+        $map = Config::normalizeCompanies([
             '01' => 'http://a',
             '02' => 'http://b',
             '' => 'http://ignored',
@@ -60,7 +60,7 @@ class ConnectionConfigTest extends TestCase
 
     public function testNormalizeCompaniesFromEnvString(): void
     {
-        $map = ConnectionConfig::normalizeCompanies(
+        $map = Config::normalizeCompanies(
             '01|http://rm-empresa01:8051;02|http://rm-empresa02:8051'
         );
 
@@ -72,14 +72,14 @@ class ConnectionConfigTest extends TestCase
 
     public function testNormalizeCompaniesEmptyValues(): void
     {
-        $this->assertSame([], ConnectionConfig::normalizeCompanies(null));
-        $this->assertSame([], ConnectionConfig::normalizeCompanies(''));
-        $this->assertSame([], ConnectionConfig::normalizeCompanies([]));
+        $this->assertSame([], Config::normalizeCompanies(null));
+        $this->assertSame([], Config::normalizeCompanies(''));
+        $this->assertSame([], Config::normalizeCompanies([]));
     }
 
     public function testResolveBaseUrlUsesDefaultWhenCompanyMissing(): void
     {
-        $config = new ConnectionConfig(
+        $config = new Config(
             url: 'http://default:8051',
             user: 'u',
             pass: 'p',
@@ -94,7 +94,7 @@ class ConnectionConfigTest extends TestCase
 
     public function testResolveBaseUrlWithoutCompaniesAlwaysReturnsDefault(): void
     {
-        $config = new ConnectionConfig(
+        $config = new Config(
             url: 'http://default:8051',
             user: 'u',
             pass: 'p',
@@ -105,7 +105,7 @@ class ConnectionConfigTest extends TestCase
 
     public function testFromArrayNormalizesCompaniesString(): void
     {
-        $config = ConnectionConfig::fromArray([
+        $config = Config::fromArray([
             'url' => 'http://default',
             'user' => 'u',
             'pass' => 'p',

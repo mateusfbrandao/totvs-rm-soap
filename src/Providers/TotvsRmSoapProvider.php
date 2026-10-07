@@ -3,7 +3,7 @@
 namespace mateusfbi\TotvsRmSoap\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\Config;
 use mateusfbi\TotvsRmSoap\Connection\WebService;
 use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 use mateusfbi\TotvsRmSoap\Services\DataServer;
@@ -28,12 +28,12 @@ class TotvsRmSoapProvider extends ServiceProvider
             'totvsrmsoap'
         );
 
-        $this->app->singleton(ConnectionConfig::class, function () {
-            return ConnectionConfig::fromArray(config('totvsrmsoap'));
+        $this->app->singleton(Config::class, function () {
+            return Config::fromArray(config('totvsrmsoap'));
         });
 
         $this->app->singleton(WebService::class, function ($app) {
-            return new WebService($app->make(ConnectionConfig::class));
+            return new WebService($app->make(Config::class));
         });
 
         $this->app->singleton(DataServer::class, fn ($app) => new DataServer($app->make(WebService::class)));

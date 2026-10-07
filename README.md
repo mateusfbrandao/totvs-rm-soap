@@ -59,12 +59,12 @@ TOTVSRM_COMPANIES="01|http://rm-empresa01:8051;02|http://rm-empresa02:8051"
 ## Uso com PHP puro
 
 ```php
-use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\Config;
 use mateusfbi\TotvsRmSoap\Connection\WebService;
 use mateusfbi\TotvsRmSoap\Services\DataServer;
 use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 
-$config = new ConnectionConfig(
+$config = new Config(
     url: 'http://localhost:8051',
     user: 'usuario',
     pass: 'senha',

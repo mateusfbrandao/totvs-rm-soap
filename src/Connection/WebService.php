@@ -2,22 +2,21 @@
 
 namespace mateusfbi\TotvsRmSoap\Connection;
 
-use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
 use mateusfbi\TotvsRmSoap\Exceptions\ConnectionException;
 use SoapClient;
 
 /**
- * Cria instâncias de SoapClient a partir de ConnectionConfig.
+ * Cria instâncias de SoapClient a partir de Config.
  *
  * Framework-agnóstico: não depende de helpers do Laravel.
  */
 class WebService
 {
     public function __construct(
-        private readonly ConnectionConfig $config
+        private readonly Config $config
     ) {}
 
-    public function getConfig(): ConnectionConfig
+    public function getConfig(): Config
     {
         return $this->config;
     }

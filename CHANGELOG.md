@@ -2,6 +2,13 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [4.0.0] - 2026-10-07
+### Alterado
+- A configuração de conexão agora é `mateusfbi\TotvsRmSoap\Connection\Config`. O arquivo publicado do Laravel continua em `src/config/totvsrmsoap.php`.
+
+### Breaking
+- `mateusfbi\TotvsRmSoap\Config\ConnectionConfig` deixou de existir. Use `mateusfbi\TotvsRmSoap\Connection\Config`.
+
 ## [3.0.2] - 2026-10-07
 ### Removido
 - Aliases de compatibilidade do namespace curto `TotvsRmSoap\`. Use apenas `mateusfbi\TotvsRmSoap\`.

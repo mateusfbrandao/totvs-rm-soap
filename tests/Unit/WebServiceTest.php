@@ -2,15 +2,15 @@
 
 namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
-use mateusfbi\TotvsRmSoap\Config\ConnectionConfig;
+use mateusfbi\TotvsRmSoap\Connection\Config;
 use mateusfbi\TotvsRmSoap\Connection\WebService;
 use PHPUnit\Framework\TestCase;
 
 class WebServiceTest extends TestCase
 {
-    public function testStoresAndExposesConnectionConfig(): void
+    public function testStoresAndExposesConfig(): void
     {
-        $config = new ConnectionConfig(
+        $config = new Config(
             url: 'http://rm.local:8051',
             user: 'mestre',
             pass: 'secret',
@@ -25,7 +25,7 @@ class WebServiceTest extends TestCase
 
     public function testCanBeConstructedWithoutLaravelHelpers(): void
     {
-        $webService = new WebService(new ConnectionConfig(
+        $webService = new WebService(new Config(
             url: 'http://localhost',
             user: 'u',
             pass: 'p',
