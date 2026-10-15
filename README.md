@@ -1,5 +1,10 @@
 # TotvsRmSoap
 
+[![CI](https://github.com/mateusfbrandao/totvs-rm-soap/actions/workflows/ci.yml/badge.svg)](https://github.com/mateusfbrandao/totvs-rm-soap/actions)
+[![Packagist](https://img.shields.io/packagist/v/mateusfbi/totvs-rm-soap.svg)](https://packagist.org/packages/mateusfbi/totvs-rm-soap)
+[![PHP](https://img.shields.io/packagist/php-v/mateusfbi/totvs-rm-soap.svg)](https://packagist.org/packages/mateusfbi/totvs-rm-soap)
+[![License](https://img.shields.io/packagist/l/mateusfbi/totvs-rm-soap.svg)](LICENSE)
+
 Biblioteca PHP para integração SOAP com o TOTVS RM. Funciona com **Laravel** (Provider/Facade) ou **PHP puro** / qualquer framework.
 
 > Atualizando de versão antiga? Veja o [guia de migração](docs/MIGRATION.md).
@@ -155,6 +160,18 @@ export TOTVSRM_USER=usuario
 export TOTVSRM_PASS=senha
 composer test:integration
 ```
+
+## Suporte
+
+| Versão | PHP | Status |
+| --- | --- | --- |
+| 4.x | ^8.2 | Mantida |
+| 3.x e anteriores | — | Descontinuadas, atualize pela [migração](docs/MIGRATION.md) |
+
+Encontrou um bug? Abra uma issue em
+[GitHub Issues](https://github.com/mateusfbrandao/totvs-rm-soap/issues) com a
+versão do pacote (`composer show mateusfbi/totvs-rm-soap`), a versão do PHP e
+o trecho do XML/erro (sem credenciais).
 
 ## Licença
 
