@@ -112,7 +112,7 @@ $res = (new ConsultaSQL($connection))->forCompany('01')
     ->RealizarConsultaSQL();
 ```
 
-Exemplos executáveis em `examples/php-puro.php` e `examples/laravel.php`.
+Exemplos em `examples/php-puro.php` e `examples/laravel.md`.
 
 ## Uso com Laravel
 
