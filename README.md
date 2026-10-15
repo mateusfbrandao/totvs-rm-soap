@@ -9,6 +9,7 @@ Biblioteca PHP para integração SOAP com o TOTVS RM. Funciona com **Laravel** (
 
 > Atualizando de versão antiga? Veja o [guia de migração](docs/MIGRATION.md).
 > Referência de `Report`/`Process`/`FormulaVisual`: [docs/SERVICES.md](docs/SERVICES.md).
+> Erros comuns: [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md).
 
 ## Requisitos
 

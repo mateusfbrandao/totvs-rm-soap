@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --prefer-dist
 
+      - name: Lint examples
+        run: for f in examples/*.php; do php -l "$f"; done
+
       - name: Pint
         run: ./vendor/bin/pint --test
 
