@@ -2,6 +2,15 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [4.5.0] - 2026-10-15
+### Adicionado
+- `docs/SERVICES.md` (referência de `Report`/`Process`/`FormulaVisual`) e `docs/TROUBLESHOOTING.md`.
+- Testes: caminhos felizes com `SoapClient` mockado, geradores de XML, comportamento do `WebService` (fail-fast, cache) e do Provider (transient/shared).
+- CI: lint dos `examples/` e Dependabot (composer + actions).
+
+### Alterado
+- Dev: `illuminate/{support,config,container}`, `phpdotenv`/`phpoption` no require-dev (só testes); bootstrap próprio do PHPUnit com polyfill `config()`.
+
 ## [4.4.0] - 2026-10-15
 ### Adicionado
 - `examples/php-puro.php` e `examples/laravel.php`; removidos os scripts de debug da raiz (`index.php`, `reports.php`, `parametros_debug.xml`).

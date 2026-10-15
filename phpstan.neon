@@ -11,3 +11,5 @@ parameters:
     ignoreErrors:
         # DTO dinâmico via __get(): colunas variam por DataServer.
         - '#Access to an undefined property mateusfbi\\TotvsRmSoap\\DataTransferObjects\\Record::\$[A-Z]+#'
+        # Teste com Container puro (sem Contracts\Foundation\Application do app Laravel real).
+        - '#expects Illuminate\\Contracts\\Foundation\\Application, Illuminate\\Container\\Container given#'
