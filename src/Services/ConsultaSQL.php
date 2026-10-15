@@ -30,9 +30,10 @@ class ConsultaSQL extends AbstractService
      * @param string $sentenca Código da Sentença SQL a ser utilizada.
      * @return void
      */
-    public function setSentenca(string $sentenca): void
+    public function setSentenca(string $sentenca): static
     {
         $this->sentenca = $sentenca;
+        return $this;
     }
 
     /**
@@ -41,9 +42,10 @@ class ConsultaSQL extends AbstractService
      * @param int $coligada Código da coligada onde a consulta será executada.
      * @return void
      */
-    public function setColigada(int $coligada): void
+    public function setColigada(int $coligada): static
     {
         $this->coligada = $coligada;
+        return $this;
     }
 
     /**
@@ -52,9 +54,10 @@ class ConsultaSQL extends AbstractService
      * @param string $sistema Código do sistema associado à consulta.
      * @return void
      */
-    public function setSistema(string $sistema): void
+    public function setSistema(string $sistema): static
     {
         $this->sistema = $sistema;
+        return $this;
     }
 
     /**
@@ -70,7 +73,7 @@ class ConsultaSQL extends AbstractService
      * @param array $params Array associativo com os parâmetros adicionais.
      * @return void
      */
-    public function setParametros(array $params = []): void
+    public function setParametros(array $params = []): static
     {
         $array = [];
 
@@ -97,6 +100,7 @@ class ConsultaSQL extends AbstractService
         }
 
         $this->parametros = implode(';', $array);
+        return $this;
     }
 
     /**

@@ -27,9 +27,10 @@ class FormulaVisual extends AbstractService
      * @param string $idFormula Identificador da fórmula.
      * @return void
      */
-    public function setFormula(string $idFormula): void
+    public function setFormula(string $idFormula): static
     {
         $this->idFormula = $idFormula;
+        return $this;
     }
 
     /**
@@ -38,9 +39,10 @@ class FormulaVisual extends AbstractService
      * @param int $coligada Código da coligada.
      * @return void
      */
-     public function setColigada(int $coligada): void
+     public function setColigada(int $coligada): static
      {
          $this->coligada = $coligada;
+         return $this;
      }
 
     /**
@@ -51,9 +53,10 @@ class FormulaVisual extends AbstractService
      * @param string $contexto Contexto da execução.
      * @return void
      */
-     public function setContexto(string $contexto): void
+     public function setContexto(string $contexto): static
      {
          $this->contexto = $contexto;
+         return $this;
      }
 
     /**
@@ -62,9 +65,10 @@ class FormulaVisual extends AbstractService
      * @param string $paramXML XML contendo os parâmetros para a execução da fórmula.
      * @return void
      */
-    public function setParametersXML(string $paramXML): void
+    public function setParametersXML(string $paramXML): static
     {
         $this->paramXML = $paramXML;
+        return $this;
     }
 
     /**

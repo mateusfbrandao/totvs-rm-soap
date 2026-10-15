@@ -41,9 +41,10 @@ class Report extends AbstractService
      * @param int $coligada Código da coligada.
      * @return void
      */
-    public function setColigada(int $coligada): void
+    public function setColigada(int $coligada): static
     {
         $this->coligada = $coligada;
+        return $this;
     }
 
     /**
@@ -52,9 +53,10 @@ class Report extends AbstractService
      * @param int $id Identificador do relatório.
      * @return void
      */
-    public function setId(int $id): void
+    public function setId(int $id): static
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -63,9 +65,10 @@ class Report extends AbstractService
      * @param string $nomeArquivo Nome do arquivo.
      * @return void
      */
-    public function setNomeArquivo(string $nomeArquivo): void
+    public function setNomeArquivo(string $nomeArquivo): static
     {
         $this->nomeArquivo = $nomeArquivo;
+        return $this;
     }
 
     /**
@@ -74,9 +77,10 @@ class Report extends AbstractService
      * @param string $contexto Contexto da requisição.
      * @return void
      */
-    public function setContexto(string $contexto): void
+    public function setContexto(string $contexto): static
     {
         $this->contexto = $contexto;
+        return $this;
     }
 
     /**
@@ -85,9 +89,10 @@ class Report extends AbstractService
      * @param string $guid Identificador único (GUID).
      * @return void
      */
-    public function setGuid(string $guid): void
+    public function setGuid(string $guid): static
     {
         $this->guid = $guid;
+        return $this;
     }
 
     /**
@@ -96,9 +101,10 @@ class Report extends AbstractService
      * @param int $length Tamanho do chunk.
      * @return void
      */
-    public function setLength(int $length): void
+    public function setLength(int $length): static
     {
         $this->length = $length;
+        return $this;
     }
 
     /**
@@ -107,9 +113,10 @@ class Report extends AbstractService
      * @param int $offset Offset do chunk.
      * @return void
      */
-    public function setOffset(int $offset): void
+    public function setOffset(int $offset): static
     {
         $this->offset = $offset;
+        return $this;
     }
 
    	 /**
@@ -131,7 +138,7 @@ class Report extends AbstractService
      * ]
      * @return void
      */
-    public function setFiltro(array $filtros = []): void
+    public function setFiltro(array $filtros = []): static
     {
 		// 1. Inicializa o objeto DOMDocument
 		$dom = new DOMDocument('1.0', 'UTF-8');
@@ -209,6 +216,7 @@ class Report extends AbstractService
             throw new InvalidArgumentException('Report: falha ao gerar o XML de filtros.');
         }
         $this->filtro = $xml;
+        return $this;
     }
 
 	/**
@@ -224,7 +232,7 @@ class Report extends AbstractService
      * @param array $params Array contendo os dados necessários para gerar o XML.
      * @return void
      */
-    public function setParametros(array $params = []): void
+    public function setParametros(array $params = []): static
     {
         // 1. Inicializa o DOMDocument, a ferramenta correta para XML complexo.
         $dom = new DOMDocument('1.0', 'UTF-8');
@@ -328,6 +336,7 @@ class Report extends AbstractService
             throw new InvalidArgumentException('Report: falha ao gerar o XML de parâmetros.');
         }
         $this->parametros = $xml;
+        return $this;
     }
 
     /**

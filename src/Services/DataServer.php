@@ -30,9 +30,10 @@ class DataServer extends AbstractService
      * @param string $dataServer Nome do DataServer.
      * @return void
      */
-    public function setDataServer(string $dataServer): void
+    public function setDataServer(string $dataServer): static
     {
         $this->dataServer = $dataServer;
+        return $this;
     }
 
     /**
@@ -41,9 +42,10 @@ class DataServer extends AbstractService
      * @param string $primaryKey Chave primária.
      * @return void
      */
-    public function setPrimaryKey(string $primaryKey): void
+    public function setPrimaryKey(string $primaryKey): static
     {
         $this->primaryKey = $primaryKey;
+        return $this;
     }
 
     /**
@@ -52,9 +54,10 @@ class DataServer extends AbstractService
      * @param string $context Contexto da requisição.
      * @return void
      */
-    public function setContexto(string $context): void
+    public function setContexto(string $context): static
     {
         $this->contexto = $context;
+        return $this;
     }
 
     /**
@@ -63,20 +66,22 @@ class DataServer extends AbstractService
      * @param string $filtro Filtro a ser aplicado.
      * @return void
      */
-    public function setFiltro(string $filtro): void
+    public function setFiltro(string $filtro): static
     {
         $this->filtro = $filtro;
+        return $this;
     }
 
     /**
      * Define diretamente o XML da requisição do DataServer.
      *
      * @param string $xml Conteúdo XML completo.
-     * @return string XML definido.
      */
-    public function setXML(string $xml): string
+    public function setXML(string $xml): static
     {
-        return $this->xml = $xml;
+        $this->xml = $xml;
+
+        return $this;
     }
     
     /**
@@ -88,7 +93,7 @@ class DataServer extends AbstractService
      * @param array $data Array associativo contendo os dados a serem convertidos em XML, estruturado com a chave 'root' para o elemento raiz e 'TABELA' para os dados.
      * @return void
      */
-    public function setXMLFromArray(array $xmlArray): void
+    public function setXMLFromArray(array $xmlArray): static
     {
         if (empty($xmlArray['root'])) {
             throw new \InvalidArgumentException('Root não informado');
@@ -112,6 +117,7 @@ class DataServer extends AbstractService
         }
 
         $this->xml = $xml;
+        return $this;
     }
 
     /**

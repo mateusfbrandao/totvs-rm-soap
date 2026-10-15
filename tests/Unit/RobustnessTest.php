@@ -159,4 +159,22 @@ class RobustnessTest extends TestCase
         $this->assertSame('***', $debug['pass']);
         $this->assertStringNotContainsString('secret', var_export($debug, true));
     }
+
+    public function testSettersAreFluent(): void
+    {
+        /** @var DataServer $ds */
+        $ds = $this->service(DataServer::class);
+        $this->assertSame($ds, $ds->setDataServer('X'));
+        $this->assertSame($ds, $ds->setContexto('C'));
+        $this->assertSame($ds, $ds->setFiltro('1=1'));
+        $this->assertSame($ds, $ds->setXML('<a/>'));
+
+        /** @var ConsultaSQL $sql */
+        $sql = $this->service(ConsultaSQL::class);
+        $this->assertSame($sql, $sql->setSentenca('S')->setColigada(1)->setSistema('G'));
+
+        /** @var Report $rp */
+        $rp = $this->service(Report::class);
+        $this->assertSame($rp, $rp->setColigada(0)->setId(1)->setContexto('C'));
+    }
 }

@@ -29,9 +29,10 @@ class Process extends AbstractService
      * @param string $process Nome do processo a ser chamado no serviço SOAP.
      * @return void
      */
-    public function setProcess(string $process): void
+    public function setProcess(string $process): static
     {
         $this->process = $process;
+        return $this;
     }
 
     /**
@@ -40,9 +41,10 @@ class Process extends AbstractService
      * @param string $xml XML contendo os parâmetros do processo.
      * @return void
      */
-    public function setXML(string $xml): void
+    public function setXML(string $xml): static
     {
         $this->xml = $xml;
+        return $this;
     }
 
     /**
@@ -51,9 +53,10 @@ class Process extends AbstractService
      * @param string $jobId Identificador único do job.
      * @return void
      */
-    public function setJobId(string $jobId): void
+    public function setJobId(string $jobId): static
     {
         $this->jobId = $jobId;
+        return $this;
     }
 
     /**
@@ -62,9 +65,10 @@ class Process extends AbstractService
      * @param string $execId Identificador da execução.
      * @return void
      */
-    public function setExecId(string $execId): void
+    public function setExecId(string $execId): static
     {
         $this->execId = $execId;
+        return $this;
     }
 
     /**

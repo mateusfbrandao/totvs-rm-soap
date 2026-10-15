@@ -2,6 +2,15 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [4.3.0] - 2026-10-15
+### Alterado
+- 27 setters `set*(): void` → `static` com `return $this` (`DataServer`, `ConsultaSQL`, `Report`, `Process`, `FormulaVisual`); encadeamento fluente liberado.
+- `DataServer::setXML(): string` → `static` (use `getXML()` para ler o XML).
+- `TotvsRmSoapProvider`: services stateful + `totvs-rm` de `singleton` → `bind` (sem vazamento de estado no Octane/filas); `Config` e `WebService` seguem singleton.
+
+### Notas
+- `ExecuteWithParams`/`RealizarConsultaSQL`: métodos PHP são case-insensitive, então qualquer case já chama o mesmo método; sem mudança necessária.
+
 ## [4.2.0] - 2026-10-15
 ### Adicionado
 - `Config::assertValid()` (fail-fast no primeiro uso, sem quebrar boot sem env) e `__debugInfo()` ocultando `pass`.
