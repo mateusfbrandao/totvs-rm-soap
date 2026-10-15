@@ -2,8 +2,7 @@
 
 namespace mateusfbi\TotvsRmSoap\Services;
 
-use \DOMDocument;
-
+use DOMDocument;
 use InvalidArgumentException;
 
 /**
@@ -18,208 +17,214 @@ use InvalidArgumentException;
  *   - Gerar o relatório.
  *   - Obter a lista de relatórios.
  *   - Obter status, metadados, informações, tamanho, hash e chunks do arquivo gerado.
- *
- * @package mateusfbi\TotvsRmSoap\Services
  */
-
 class Report extends AbstractService
 {
     protected string $endpointPath = '/wsReport/MEX?wsdl';
+
     private int $coligada;
+
     private int $id;
+
     private string $filtro;
+
     private string $parametros;
+
     private string $nomeArquivo;
+
     private string $contexto;
+
     private int $offset;
+
     private int $length;
+
     private string $guid;
 
     /**
      * Define o código da coligada.
      *
-     * @param int $coligada Código da coligada.
-     * @return void
+     * @param  int  $coligada  Código da coligada.
      */
     public function setColigada(int $coligada): static
     {
         $this->coligada = $coligada;
+
         return $this;
     }
 
     /**
      * Define o identificador do relatório.
      *
-     * @param int $id Identificador do relatório.
-     * @return void
+     * @param  int  $id  Identificador do relatório.
      */
     public function setId(int $id): static
     {
         $this->id = $id;
+
         return $this;
     }
 
     /**
      * Define o nome do arquivo do relatório.
      *
-     * @param string $nomeArquivo Nome do arquivo.
-     * @return void
+     * @param  string  $nomeArquivo  Nome do arquivo.
      */
     public function setNomeArquivo(string $nomeArquivo): static
     {
         $this->nomeArquivo = $nomeArquivo;
+
         return $this;
     }
 
     /**
      * Define o contexto da requisição.
      *
-     * @param string $contexto Contexto da requisição.
-     * @return void
+     * @param  string  $contexto  Contexto da requisição.
      */
     public function setContexto(string $contexto): static
     {
         $this->contexto = $contexto;
+
         return $this;
     }
 
     /**
      * Define o GUID utilizado para obter informações do arquivo gerado.
      *
-     * @param string $guid Identificador único (GUID).
-     * @return void
+     * @param  string  $guid  Identificador único (GUID).
      */
     public function setGuid(string $guid): static
     {
         $this->guid = $guid;
+
         return $this;
     }
 
     /**
      * Define o tamanho do chunk de arquivo a ser recuperado.
      *
-     * @param int $length Tamanho do chunk.
-     * @return void
+     * @param  int  $length  Tamanho do chunk.
      */
     public function setLength(int $length): static
     {
         $this->length = $length;
+
         return $this;
     }
 
     /**
      * Define o offset para a requisição de um chunk do arquivo.
      *
-     * @param int $offset Offset do chunk.
-     * @return void
+     * @param  int  $offset  Offset do chunk.
      */
     public function setOffset(int $offset): static
     {
         $this->offset = $offset;
+
         return $this;
     }
 
-   	 /**
+    /**
      * Gera o XML de filtros do relatório.
      *
      * Este método percorre um array de itens e monta a estrutura XML
      * que será enviada ao serviço SOAP.
      *
-     * @param array[] $filtros Array de filtros. Cada filtro deve ser um array associativo com a seguinte estrutura:
-     * [
-     * 'bandname' => (string) Nome da banda do relatório.
-     * 'mainfilter' => (bool) Se é o filtro principal.
-     * 'filtersbytable' => (array[]) Lista de sub-filtros, onde cada um é um array com:
-     * [
-     * 'filter' => (string) A condição de filtro SQL.
-     * 'name' => (string) Nome do filtro (opcional).
-     * 'tablename' => (string) Nome da tabela alvo.
-     * ]
-     * ]
-     * @return void
+     * @param  array<int, array<string, mixed>>  $filtros  Array de filtros. Cada filtro deve ser um array associativo com a seguinte estrutura:
+     *                                                     [
+     *                                                     'bandname' => (string) Nome da banda do relatório.
+     *                                                     'mainfilter' => (bool) Se é o filtro principal.
+     *                                                     'filtersbytable' => (array[]) Lista de sub-filtros, onde cada um é um array com:
+     *                                                     [
+     *                                                     'filter' => (string) A condição de filtro SQL.
+     *                                                     'name' => (string) Nome do filtro (opcional).
+     *                                                     'tablename' => (string) Nome da tabela alvo.
+     *                                                     ]
+     *                                                     ]
      */
     public function setFiltro(array $filtros = []): static
     {
-		// 1. Inicializa o objeto DOMDocument
-		$dom = new DOMDocument('1.0', 'UTF-8');
-		$dom->formatOutput = true; // Formata o XML para melhor legibilidade
-		$dom->preserveWhiteSpace = false;
+        // 1. Inicializa o objeto DOMDocument
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true; // Formata o XML para melhor legibilidade
+        $dom->preserveWhiteSpace = false;
 
-		// 2. Cria o elemento raiz <ArrayOfRptFilterReportPar> com seus namespaces
-		$root = $dom->createElement('ArrayOfRptFilterReportPar');
-		$root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:i', 'http://www.w3.org/2001/XMLSchema-instance');
-		$root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.totvs.com.br/RM/');
-		$dom->appendChild($root);
+        // 2. Cria o elemento raiz <ArrayOfRptFilterReportPar> com seus namespaces
+        $root = $dom->createElement('ArrayOfRptFilterReportPar');
+        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:i', 'http://www.w3.org/2001/XMLSchema-instance');
+        $root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.totvs.com.br/RM/');
+        $dom->appendChild($root);
 
-		// 3. Percorre o array de entrada para criar cada bloco do XML
-		foreach ($filtros as $index => $filtroData) {
-		    if (!is_array($filtroData) || !isset($filtroData['bandname'], $filtroData['mainfilter'])) {
-		        throw new InvalidArgumentException(
-		            sprintf("Report: filtro #%d deve conter 'bandname' e 'mainfilter'.", $index)
-		        );
-		    }
-		    $rptFilterReportPar = $dom->createElement('RptFilterReportPar');
+        // 3. Percorre o array de entrada para criar cada bloco do XML
+        foreach ($filtros as $index => $filtroData) {
+            if (! is_array($filtroData) || ! isset($filtroData['bandname'], $filtroData['mainfilter'])) {
+                throw new InvalidArgumentException(
+                    sprintf("Report: filtro #%d deve conter 'bandname' e 'mainfilter'.", $index)
+                );
+            }
+            $rptFilterReportPar = $dom->createElement('RptFilterReportPar');
 
-		    // Adiciona a tag <BandName> (createTextNode escapa &<>)
-		    self::appendTextElement($dom, $rptFilterReportPar, 'BandName', (string) $filtroData['bandname']);
+            // Adiciona a tag <BandName> (createTextNode escapa &<>)
+            self::appendTextElement($dom, $rptFilterReportPar, 'BandName', (string) $filtroData['bandname']);
 
-		    // Cria a tag <FiltersByTable> e seus filhos
-		    $filtersByTable = $dom->createElement('FiltersByTable');
-		    $valueContent = ''; // Inicializa o conteúdo para a tag <Value>
+            // Cria a tag <FiltersByTable> e seus filhos
+            $filtersByTable = $dom->createElement('FiltersByTable');
+            $valueContent = ''; // Inicializa o conteúdo para a tag <Value>
 
-		    if (!empty($filtroData['filtersbytable'])) {
-		        if (!is_array($filtroData['filtersbytable'])) {
-		            throw new InvalidArgumentException("Report: 'filtersbytable' deve ser um array.");
-		        }
-		        $allFilters = [];
-		        foreach ($filtroData['filtersbytable'] as $tableFilter) {
-		            if (!is_array($tableFilter) || !isset($tableFilter['filter'], $tableFilter['tablename'])) {
-		                throw new InvalidArgumentException("Report: cada sub-filtro deve conter 'filter' e 'tablename'.");
-		            }
-		            $rptFilterByTablePar = $dom->createElement('RptFilterByTablePar');
+            if (! empty($filtroData['filtersbytable'])) {
+                if (! is_array($filtroData['filtersbytable'])) {
+                    throw new InvalidArgumentException("Report: 'filtersbytable' deve ser um array.");
+                }
+                $allFilters = [];
+                foreach ($filtroData['filtersbytable'] as $tableFilter) {
+                    if (! is_array($tableFilter) || ! isset($tableFilter['filter'], $tableFilter['tablename'])) {
+                        throw new InvalidArgumentException("Report: cada sub-filtro deve conter 'filter' e 'tablename'.");
+                    }
+                    $rptFilterByTablePar = $dom->createElement('RptFilterByTablePar');
 
-		            $filterElement = $dom->createElement('Filter');
-		            // Usa CDATA para o conteúdo do filtro
-		            $filterElement->appendChild($dom->createCDATASection((string) $tableFilter['filter']));
-		            $rptFilterByTablePar->appendChild($filterElement);
+                    $filterElement = $dom->createElement('Filter');
+                    // Usa CDATA para o conteúdo do filtro
+                    $filterElement->appendChild($dom->createCDATASection((string) $tableFilter['filter']));
+                    $rptFilterByTablePar->appendChild($filterElement);
 
-		            self::appendTextElement($dom, $rptFilterByTablePar, 'Name', (string) ($tableFilter['name'] ?? ''));
-		            self::appendTextElement($dom, $rptFilterByTablePar, 'TableName', (string) $tableFilter['tablename']);
+                    self::appendTextElement($dom, $rptFilterByTablePar, 'Name', (string) ($tableFilter['name'] ?? ''));
+                    self::appendTextElement($dom, $rptFilterByTablePar, 'TableName', (string) $tableFilter['tablename']);
 
-		            $filtersByTable->appendChild($rptFilterByTablePar);
+                    $filtersByTable->appendChild($rptFilterByTablePar);
 
-		            // Acumula os filtros para usar na tag <Value>
-		            $allFilters[] = (string) $tableFilter['filter'];
-		        }
-		        // Constrói o conteúdo da tag <Value>
-		        $valueContent = '(' . implode(' AND ', $allFilters) . ')';
-		    }
-		    $rptFilterReportPar->appendChild($filtersByTable);
+                    // Acumula os filtros para usar na tag <Value>
+                    $allFilters[] = (string) $tableFilter['filter'];
+                }
+                // Constrói o conteúdo da tag <Value>
+                $valueContent = '('.implode(' AND ', $allFilters).')';
+            }
+            $rptFilterReportPar->appendChild($filtersByTable);
 
-		    // Adiciona a tag <MainFilter>
-		    self::appendTextElement($dom, $rptFilterReportPar, 'MainFilter', $filtroData['mainfilter'] ? 'true' : 'false');
+            // Adiciona a tag <MainFilter>
+            self::appendTextElement($dom, $rptFilterReportPar, 'MainFilter', $filtroData['mainfilter'] ? 'true' : 'false');
 
-		    // Adiciona a tag <Value> com o conteúdo gerado
-		    $valueElement = $dom->createElement('Value');
-		    if ($valueContent !== '') {
-		        $valueElement->appendChild($dom->createCDATASection($valueContent));
-		    }
-		    $rptFilterReportPar->appendChild($valueElement);
+            // Adiciona a tag <Value> com o conteúdo gerado
+            $valueElement = $dom->createElement('Value');
+            if ($valueContent !== '') {
+                $valueElement->appendChild($dom->createCDATASection($valueContent));
+            }
+            $rptFilterReportPar->appendChild($valueElement);
 
-		    // Adiciona o bloco completo ao elemento raiz
-		    $root->appendChild($rptFilterReportPar);
-		}
+            // Adiciona o bloco completo ao elemento raiz
+            $root->appendChild($rptFilterReportPar);
+        }
 
-		// 4. Retorna a string XML completa
+        // 4. Retorna a string XML completa
         $xml = $dom->saveXML();
         if ($xml === false) {
             throw new InvalidArgumentException('Report: falha ao gerar o XML de filtros.');
         }
         $this->filtro = $xml;
+
         return $this;
     }
 
-	/**
+    /**
      * Gera o XML de parâmetros do relatório usando DOMDocument para maior robustez.
      *
      * Este método percorre um array de itens e monta a estrutura XML
@@ -229,8 +234,7 @@ class Report extends AbstractService
      * - Type (String, Int16, Int32 ou DateTime)
      * - Value
      *
-     * @param array $params Array contendo os dados necessários para gerar o XML.
-     * @return void
+     * @param  array<int, array<string, mixed>>  $params  Array contendo os dados necessários para gerar o XML.
      */
     public function setParametros(array $params = []): static
     {
@@ -256,7 +260,7 @@ class Report extends AbstractService
 
         // Percorre o array de parâmetros
         foreach ($params as $index => $item) {
-            if (!is_array($item) || !isset($item['Description'], $item['ParamName'], $item['Type'], $item['Value'])) {
+            if (! is_array($item) || ! isset($item['Description'], $item['ParamName'], $item['Type'], $item['Value'])) {
                 throw new InvalidArgumentException(
                     sprintf("Report: parâmetro #%d deve conter 'Description', 'ParamName', 'Type' e 'Value'.", $index)
                 );
@@ -281,9 +285,15 @@ class Report extends AbstractService
             $typeValue = '';
             $valueType = '';
             switch ($item['Type']) {
-                case 'String': $typeValue = 'System.String'; $valueType = 'string'; break;
-                case 'Int16': $typeValue = 'System.Int16'; $valueType = 'int'; break;
-                case 'Int32': $typeValue = 'System.Int32'; $valueType = 'int'; break;
+                case 'String': $typeValue = 'System.String';
+                    $valueType = 'string';
+                    break;
+                case 'Int16': $typeValue = 'System.Int16';
+                    $valueType = 'int';
+                    break;
+                case 'Int32': $typeValue = 'System.Int32';
+                    $valueType = 'int';
+                    break;
                 case 'DateTime':
                     $typeValue = 'System.DateTime';
                     $valueType = 'dateTime';
@@ -320,7 +330,7 @@ class Report extends AbstractService
             // --- Bloco <Value> ---
             $valueNode = $dom->createElement('Value');
             $valueNode->appendChild($dom->createTextNode((string) $item['Value']));
-            $valueNode->setAttributeNS($nsI, 'i:type', 'd3p1:' . $valueType);
+            $valueNode->setAttributeNS($nsI, 'i:type', 'd3p1:'.$valueType);
             $valueNode->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:d3p1', $nsSchema);
             $node->appendChild($valueNode);
 
@@ -336,6 +346,7 @@ class Report extends AbstractService
             throw new InvalidArgumentException('Report: falha ao gerar o XML de parâmetros.');
         }
         $this->parametros = $xml;
+
         return $this;
     }
 
@@ -345,7 +356,7 @@ class Report extends AbstractService
      * Executa o método GetReportList do serviço SOAP e processa o resultado,
      * retornando em formato de array associativo.
      *
-     * @return array Lista de relatórios com campos como coligada, sistema, id, código, nome, data e uuid.
+     * @return list<array<string, string>> Lista de relatórios com campos como coligada, sistema, id, código, nome, data e uuid.
      */
     public function getReportList(): array
     {
@@ -360,12 +371,14 @@ class Report extends AbstractService
      *
      * Extraído para dentro da classe para permitir teste unitário sem SOAP.
      * Registros malformados são ignorados (sem I/O lateral na biblioteca).
+     *
+     * @return list<array<string, string>>
      */
     public static function parseReportList(mixed $rawResult): array
     {
         $return = [];
 
-        if (empty($rawResult) || !is_string($rawResult)) {
+        if (empty($rawResult) || ! is_string($rawResult)) {
             return [];
         }
 
@@ -425,12 +438,13 @@ class Report extends AbstractService
         $this->requireSet('contexto', 'setContexto');
         $params = [
             'codColigada' => $this->coligada,
-            'id'          => $this->id,
-            'filters'     => $this->filtro ?? null,
-            'parameters'  => $this->parametros ?? null,
-            'fileName'    => $this->nomeArquivo,
-            'contexto'    => $this->contexto,
+            'id' => $this->id,
+            'filters' => $this->filtro ?? null,
+            'parameters' => $this->parametros ?? null,
+            'fileName' => $this->nomeArquivo,
+            'contexto' => $this->contexto,
         ];
+
         return $this->callWebServiceMethod('GenerateReport', $params);
     }
 
@@ -449,16 +463,17 @@ class Report extends AbstractService
         $this->requireSet('contexto', 'setContexto');
         $params = [
             'codColigada' => $this->coligada,
-            'id'          => $this->id,
-            'filters'     => $this->filtro ?? null,
-            'parameters'  => $this->parametros ?? null,
-            'fileName'    => $this->nomeArquivo,
-            'contexto'    => $this->contexto,
+            'id' => $this->id,
+            'filters' => $this->filtro ?? null,
+            'parameters' => $this->parametros ?? null,
+            'fileName' => $this->nomeArquivo,
+            'contexto' => $this->contexto,
         ];
+
         return $this->callWebServiceMethod('GenerateReportAsynchronous', $params);
     }
 
-   /**
+    /**
      * Obtém os metadados do relatório.
      *
      * Envia uma requisição SOAP para recuperar os metadados do relatório com base nos parâmetros coligada e id.
@@ -471,8 +486,9 @@ class Report extends AbstractService
         $this->requireSet('id', 'setId');
         $params = [
             'codColigada' => $this->coligada,
-            'id'      => $this->id
+            'id' => $this->id,
         ];
+
         return $this->callWebServiceMethod('GetReportMetaData', $params);
     }
 
@@ -482,17 +498,18 @@ class Report extends AbstractService
      * Executa uma requisição SOAP para recuperar informações do relatório baseado no idReport e retorna
      * o resultado como um array.
      *
-     * @return array Informações do relatório ou array vazio em caso de falha.
+     * @return array<string, mixed> Informações do relatório ou array vazio em caso de falha.
      */
     public function getReportInfo(): array
     {
         $this->requireSet('coligada', 'setColigada');
         $this->requireSet('id', 'setId');
         $params = [
-            'codColigada'      => $this->coligada,
-            'idReport'      => $this->id
+            'codColigada' => $this->coligada,
+            'idReport' => $this->id,
         ];
         $result = $this->callWebServiceMethod('GetReportInfo', $params);
+
         return isset($result->string) ? $result->string : [];
     }
 
@@ -508,8 +525,9 @@ class Report extends AbstractService
     {
         $this->requireSet('guid', 'setGuid');
         $params = [
-            'id'      => $this->guid
+            'id' => $this->guid,
         ];
+
         return $this->callWebServiceMethod('GetGeneratedReportStatus', $params);
     }
 
@@ -524,8 +542,9 @@ class Report extends AbstractService
     {
         $this->requireSet('guid', 'setGuid');
         $params = [
-            'guid'      => $this->guid
+            'guid' => $this->guid,
         ];
+
         return (int) $this->callWebServiceMethod('GetGeneratedReportSize', $params);
     }
 
@@ -540,8 +559,9 @@ class Report extends AbstractService
     {
         $this->requireSet('guid', 'setGuid');
         $params = [
-            'guid'      => $this->guid
+            'guid' => $this->guid,
         ];
+
         return $this->callWebServiceMethod('GetFileHash', $params);
     }
 
@@ -558,16 +578,17 @@ class Report extends AbstractService
         $this->requireSet('offset', 'setOffset');
         $this->requireSet('length', 'setLength');
         $params = [
-            'guid'      => $this->guid,
-            'offset'      => $this->offset,
-            'length'      => $this->length
+            'guid' => $this->guid,
+            'offset' => $this->offset,
+            'length' => $this->length,
         ];
+
         return $this->callWebServiceMethod('GetFileChunk', $params);
     }
 
     private function requireSet(string $property, string $setter): void
     {
-        if (!isset($this->$property)) {
+        if (! isset($this->$property)) {
             throw new InvalidArgumentException(
                 sprintf('Report: chame %s() antes de executar a operação.', $setter)
             );

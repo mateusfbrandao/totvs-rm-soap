@@ -2,5 +2,4 @@
 
 namespace mateusfbi\TotvsRmSoap\Exceptions;
 
-class RecordNotFoundException extends \Exception
-{}
+class RecordNotFoundException extends \Exception {}

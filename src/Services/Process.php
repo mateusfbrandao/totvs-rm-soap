@@ -12,62 +12,64 @@ use InvalidArgumentException;
  * A classe prepara os parâmetros da requisição, invoca o serviço SOAP através do WebService e
  * trata a resposta utilizando a utilidade de serialização. Ela é projetada para centralizar
  * toda lógica de processamento, facilitando a manutenção e extensibilidade do código.
- *
- * @package mateusfbi\TotvsRmSoap\Services
  */
 class Process extends AbstractService
 {
     protected string $endpointPath = '/wsProcess/MEX?wsdl';
+
     private string $process;
+
     private string $xml;
+
     private string $jobId;
+
     private string $execId;
 
     /**
      * Define o nome do processo que será executado.
      *
-     * @param string $process Nome do processo a ser chamado no serviço SOAP.
-     * @return void
+     * @param  string  $process  Nome do processo a ser chamado no serviço SOAP.
      */
     public function setProcess(string $process): static
     {
         $this->process = $process;
+
         return $this;
     }
 
     /**
      * Define o XML com os parâmetros da requisição.
      *
-     * @param string $xml XML contendo os parâmetros do processo.
-     * @return void
+     * @param  string  $xml  XML contendo os parâmetros do processo.
      */
     public function setXML(string $xml): static
     {
         $this->xml = $xml;
+
         return $this;
     }
 
     /**
      * Define o identificador do job do processo.
      *
-     * @param string $jobId Identificador único do job.
-     * @return void
+     * @param  string  $jobId  Identificador único do job.
      */
     public function setJobId(string $jobId): static
     {
         $this->jobId = $jobId;
+
         return $this;
     }
 
     /**
      * Define o identificador da execução do processo.
      *
-     * @param string $execId Identificador da execução.
-     * @return void
+     * @param  string  $execId  Identificador da execução.
      */
     public function setExecId(string $execId): static
     {
         $this->execId = $execId;
+
         return $this;
     }
 
@@ -85,8 +87,9 @@ class Process extends AbstractService
         $this->requireSet('xml', 'setXML');
         $params = [
             'ProcessServerName' => $this->process,
-            'strXmlParams'      => $this->xml
+            'strXmlParams' => $this->xml,
         ];
+
         return (int) $this->callWebServiceMethod('ExecuteWithXmlParams', $params);
     }
 
@@ -104,8 +107,9 @@ class Process extends AbstractService
         $this->requireSet('xml', 'setXML');
         $params = [
             'ProcessServerName' => $this->process,
-            'strXmlParams'      => $this->xml
+            'strXmlParams' => $this->xml,
         ];
+
         return (int) $this->callWebServiceMethod('ExecuteWithParams', $params);
     }
 
@@ -121,15 +125,16 @@ class Process extends AbstractService
         $this->requireSet('jobId', 'setJobId');
         $this->requireSet('execId', 'setExecId');
         $params = [
-            'jobId'  => $this->jobId,
-            'execId' => $this->execId
+            'jobId' => $this->jobId,
+            'execId' => $this->execId,
         ];
+
         return (int) $this->callWebServiceMethod('getProcessStatus', $params);
     }
 
     private function requireSet(string $property, string $setter): void
     {
-        if (!isset($this->$property)) {
+        if (! isset($this->$property)) {
             throw new InvalidArgumentException(
                 sprintf('Process: chame %s() antes de executar a operação.', $setter)
             );

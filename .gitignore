@@ -2,9 +2,9 @@
 .idea/*
 vendor/*
 .env
-index.php
+/index.php
 composer.lock
 .phpunit.cache
 .phpunit.result.cache
-parametros_debug.xml
-reports.php
+/parametros_debug.xml
+/reports.php

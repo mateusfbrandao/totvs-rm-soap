@@ -22,13 +22,13 @@ class ConsultaSQLIntegrationTest extends TestCase
         }
 
         foreach (['TOTVSRM_WSURL', 'TOTVSRM_USER', 'TOTVSRM_PASS'] as $key) {
-            if (!getenv($key)) {
+            if (! getenv($key)) {
                 $this->markTestSkipped("Variável de ambiente {$key} não definida.");
             }
         }
     }
 
-    public function testRealizarConsultaSQLAgainstLiveRm(): void
+    public function test_realizar_consulta_sql_against_live_rm(): void
     {
         $sentenca = getenv('TOTVSRM_TEST_SENTENCA') ?: 'WORKDAY.002';
 
@@ -57,6 +57,6 @@ class ConsultaSQLIntegrationTest extends TestCase
 
         $result = $sql->RealizarConsultaSQL();
 
-        $this->assertNotNull($result);
+        $this->assertArrayHasKey('response', $result);
     }
 }

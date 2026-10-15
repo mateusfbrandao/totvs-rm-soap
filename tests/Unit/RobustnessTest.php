@@ -2,13 +2,15 @@
 
 namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
+use InvalidArgumentException;
 use mateusfbi\TotvsRmSoap\Connection\Config;
 use mateusfbi\TotvsRmSoap\Connection\WebService;
+use mateusfbi\TotvsRmSoap\DataTransferObjects\ReadViewParams;
+use mateusfbi\TotvsRmSoap\DataTransferObjects\Record;
 use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 use mateusfbi\TotvsRmSoap\Services\DataServer;
 use mateusfbi\TotvsRmSoap\Services\Report;
 use mateusfbi\TotvsRmSoap\Utils\Serialize;
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use UnexpectedValueException;
 
@@ -21,35 +23,35 @@ class RobustnessTest extends TestCase
         return new $class(new WebService($config));
     }
 
-    public function testSerializeEmptyReturnsEmptyArray(): void
+    public function test_serialize_empty_returns_empty_array(): void
     {
         $this->assertSame([], Serialize::result(null));
         $this->assertSame([], Serialize::result(''));
         $this->assertSame([], Serialize::result([]));
     }
 
-    public function testSerializeValidXml(): void
+    public function test_serialize_valid_xml(): void
     {
         $result = Serialize::result('<root><Resultado><item>1</item></Resultado></root>');
 
         $this->assertSame('1', $result['Resultado']['item']);
     }
 
-    public function testSerializeInvalidXmlThrows(): void
+    public function test_serialize_invalid_xml_throws(): void
     {
         $this->expectException(UnexpectedValueException::class);
 
         Serialize::result('<root><unclosed>');
     }
 
-    public function testSerializeNonStringThrows(): void
+    public function test_serialize_non_string_throws(): void
     {
         $this->expectException(UnexpectedValueException::class);
 
         Serialize::result(123);
     }
 
-    public function testDataServerXmlEscapesSpecialChars(): void
+    public function test_data_server_xml_escapes_special_chars(): void
     {
         /** @var DataServer $ds */
         $ds = $this->service(DataServer::class);
@@ -66,7 +68,7 @@ class RobustnessTest extends TestCase
         $this->assertNotFalse(simplexml_load_string($xml));
     }
 
-    public function testDataServerXmlRejectsInvalidTag(): void
+    public function test_data_server_xml_rejects_invalid_tag(): void
     {
         /** @var DataServer $ds */
         $ds = $this->service(DataServer::class);
@@ -75,7 +77,7 @@ class RobustnessTest extends TestCase
         $ds->setXMLFromArray(['root' => 'R', 'TABELA' => ['1NV' => ['A' => 'b']]]);
     }
 
-    public function testConsultaSQLRejectsSemicolonInValue(): void
+    public function test_consulta_sql_rejects_semicolon_in_value(): void
     {
         /** @var ConsultaSQL $sql */
         $sql = $this->service(ConsultaSQL::class);
@@ -84,7 +86,7 @@ class RobustnessTest extends TestCase
         $sql->setParametros(['P1' => 'A;B']);
     }
 
-    public function testConsultaSQLRejectsInvalidKey(): void
+    public function test_consulta_sql_rejects_invalid_key(): void
     {
         /** @var ConsultaSQL $sql */
         $sql = $this->service(ConsultaSQL::class);
@@ -93,7 +95,7 @@ class RobustnessTest extends TestCase
         $sql->setParametros(['A=B' => 'x']);
     }
 
-    public function testReportRejectsUnknownType(): void
+    public function test_report_rejects_unknown_type(): void
     {
         /** @var Report $rp */
         $rp = $this->service(Report::class);
@@ -102,7 +104,7 @@ class RobustnessTest extends TestCase
         $rp->setParametros([['Description' => 'D', 'ParamName' => 'P', 'Type' => 'Float', 'Value' => '1']]);
     }
 
-    public function testReportRejectsInvalidDateTime(): void
+    public function test_report_rejects_invalid_date_time(): void
     {
         /** @var Report $rp */
         $rp = $this->service(Report::class);
@@ -111,7 +113,7 @@ class RobustnessTest extends TestCase
         $rp->setParametros([['Description' => 'D', 'ParamName' => 'P', 'Type' => 'DateTime', 'Value' => 'not-a-date']]);
     }
 
-    public function testReportParametrosEscapesSpecialChars(): void
+    public function test_report_parametros_escapes_special_chars(): void
     {
         /** @var Report $rp */
         $rp = $this->service(Report::class);
@@ -124,7 +126,7 @@ class RobustnessTest extends TestCase
         $this->assertStringContainsString('x&lt;y', $xml);
     }
 
-    public function testParseReportListHandlesSerializedWrapperAndCommaInName(): void
+    public function test_parse_report_list_handles_serialized_wrapper_and_comma_in_name(): void
     {
         $raw = 's:99:"0,G,4587,COD,Relat, com, virgula,2026-01-01,uuid-1;,1,P,2,X,Y,2026-01-02,uuid-2";';
 
@@ -136,14 +138,14 @@ class RobustnessTest extends TestCase
         $this->assertSame('Y', $parsed[1]['nome']);
     }
 
-    public function testParseReportListSkipsMalformedWithoutSideEffects(): void
+    public function test_parse_report_list_skips_malformed_without_side_effects(): void
     {
         $parsed = Report::parseReportList('incompleto,sem,campos');
 
         $this->assertSame([], $parsed);
     }
 
-    public function testConfigAssertValidFailsFast(): void
+    public function test_config_assert_valid_fails_fast(): void
     {
         $config = new Config(url: '', user: 'u', pass: 'p');
 
@@ -151,7 +153,7 @@ class RobustnessTest extends TestCase
         $config->assertValid();
     }
 
-    public function testConfigDebugInfoHidesPassword(): void
+    public function test_config_debug_info_hides_password(): void
     {
         $config = new Config(url: 'http://x', user: 'u', pass: 'secret');
         $debug = $config->__debugInfo();
@@ -160,7 +162,7 @@ class RobustnessTest extends TestCase
         $this->assertStringNotContainsString('secret', var_export($debug, true));
     }
 
-    public function testSettersAreFluent(): void
+    public function test_setters_are_fluent(): void
     {
         /** @var DataServer $ds */
         $ds = $this->service(DataServer::class);
@@ -176,5 +178,35 @@ class RobustnessTest extends TestCase
         /** @var Report $rp */
         $rp = $this->service(Report::class);
         $this->assertSame($rp, $rp->setColigada(0)->setId(1)->setContexto('C'));
+    }
+
+    public function test_record_get_and_has(): void
+    {
+        $record = new Record(['A' => '1']);
+
+        $this->assertSame('1', $record->get('A'));
+        $this->assertSame('fallback', $record->get('MISSING', 'fallback'));
+        $this->assertTrue($record->has('A'));
+        $this->assertFalse($record->has('MISSING'));
+    }
+
+    public function test_read_view_with_dto(): void
+    {
+        $soap = $this->createMock(\SoapClient::class);
+        $soap->method('__call')->willReturn(
+            (object) ['ReadViewResult' => '<NewDataSet><T><A>1</A></T></NewDataSet>']
+        );
+
+        /** @var DataServer $ds */
+        $ds = $this->service(DataServer::class);
+        $ds->setSoapClient($soap);
+
+        $result = $ds->readViewWith(new ReadViewParams(
+            dataServerName: 'DS',
+            filter: '1=1',
+            context: 'CTX',
+        ));
+
+        $this->assertSame(['T' => ['A' => '1']], $result);
     }
 }

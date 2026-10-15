@@ -13,19 +13,18 @@ class Serialize
      * inválido agora lança exceção em vez de ser confundido com
      * "sem registros".
      *
-     * @param mixed $response
-     * @return array
+     * @param  mixed  $response
+     * @return array<string, mixed>
      *
      * @throws UnexpectedValueException Quando a resposta não é string nem vazia, ou o XML é inválido.
      */
-
     public static function result($response): array
     {
         if ($response === null || $response === '' || $response === []) {
             return [];
         }
 
-        if (!is_string($response)) {
+        if (! is_string($response)) {
             throw new UnexpectedValueException(
                 sprintf('Resposta SOAP inválida: esperado XML string, recebido %s.', get_debug_type($response))
             );
@@ -44,7 +43,7 @@ class Serialize
                     $details[] = trim(sprintf('linha %d: %s', $error->line, $error->message));
                 }
                 throw new UnexpectedValueException(
-                    'Resposta SOAP com XML inválido.' . ($details !== [] ? ' ' . implode('; ', $details) : '')
+                    'Resposta SOAP com XML inválido.'.($details !== [] ? ' '.implode('; ', $details) : '')
                 );
             }
 

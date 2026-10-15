@@ -2,12 +2,12 @@
 
 namespace mateusfbi\TotvsRmSoap\Tests\Unit;
 
+use mateusfbi\TotvsRmSoap\Connection\WebService;
 use mateusfbi\TotvsRmSoap\Services\ConsultaSQL;
 use mateusfbi\TotvsRmSoap\Services\DataServer;
 use mateusfbi\TotvsRmSoap\Services\FormulaVisual;
 use mateusfbi\TotvsRmSoap\Services\Process;
 use mateusfbi\TotvsRmSoap\Services\Report;
-use mateusfbi\TotvsRmSoap\Connection\WebService;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
@@ -16,7 +16,7 @@ use SoapClient;
 class ServiceForCompanyTest extends TestCase
 {
     #[DataProvider('servicesProvider')]
-    public function testConstructIsLazyAndForCompanyDefersClientCreation(string $serviceClass, string $endpoint): void
+    public function test_construct_is_lazy_and_for_company_defers_client_creation(string $serviceClass, string $endpoint): void
     {
         $soapClient = $this->createMock(SoapClient::class);
         $calls = [];
@@ -60,7 +60,7 @@ class ServiceForCompanyTest extends TestCase
     }
 
     #[DataProvider('servicesProvider')]
-    public function testSetSoapClientAvoidsWebServiceCall(string $serviceClass): void
+    public function test_set_soap_client_avoids_web_service_call(string $serviceClass): void
     {
         $webService = $this->createMock(WebService::class);
         $webService->expects($this->never())->method('getClient');
@@ -77,6 +77,9 @@ class ServiceForCompanyTest extends TestCase
         $method->invoke($service);
     }
 
+    /**
+     * @return array<string, array{0: class-string, 1: string}>
+     */
     public static function servicesProvider(): array
     {
         return [

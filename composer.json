@@ -16,7 +16,9 @@
         "ext-xml": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.0"
+        "phpunit/phpunit": "^11.0",
+        "laravel/pint": "^1.32",
+        "phpstan/phpstan": "^2.3"
     },
     "replace": {
         "mateusfbi/totvs-rm-soap-laravel": "self.version"
@@ -36,7 +38,11 @@
     },
     "scripts": {
         "test": "phpunit",
-        "test:integration": "phpunit --group integration"
+        "test:integration": "phpunit --group integration",
+        "format": "pint",
+        "format:test": "pint --test",
+        "analyse": "phpstan analyse --memory-limit=512M",
+        "ci": ["@format:test", "@analyse", "@test"]
     },
     "extra": {
         "laravel": {

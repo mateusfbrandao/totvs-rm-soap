@@ -10,64 +10,66 @@ use InvalidArgumentException;
  * Responsável por executar fórmulas visuais por meio do serviço SOAP da Totvs RM.
  * Essa classe configura os parâmetros necessários (como a fórmula, coligada, contexto e XML de parâmetros),
  * invoca o serviço SOAP e retorna o resultado da execução.
- *
- * @package mateusfbi\TotvsRmSoap\Services
  */
 class FormulaVisual extends AbstractService
 {
     protected string $endpointPath = '/wsFormulaVisual/MEX?wsdl';
+
     private string $idFormula;
+
     private int $coligada;
+
     private string $contexto;
+
     private string $paramXML;
 
     /**
      * Define a fórmula a ser executada.
      *
-     * @param string $idFormula Identificador da fórmula.
-     * @return void
+     * @param  string  $idFormula  Identificador da fórmula.
      */
     public function setFormula(string $idFormula): static
     {
         $this->idFormula = $idFormula;
+
         return $this;
     }
 
     /**
      * Define o código da coligada para a execução.
      *
-     * @param int $coligada Código da coligada.
-     * @return void
+     * @param  int  $coligada  Código da coligada.
      */
-     public function setColigada(int $coligada): static
-     {
-         $this->coligada = $coligada;
-         return $this;
-     }
+    public function setColigada(int $coligada): static
+    {
+        $this->coligada = $coligada;
+
+        return $this;
+    }
 
     /**
      * Define o contexto que será utilizado na execução da fórmula.
      *
      * Geralmente, o contexto pode incluir informações como usuário, sistema, coligada, etc.
      *
-     * @param string $contexto Contexto da execução.
-     * @return void
+     * @param  string  $contexto  Contexto da execução.
      */
-     public function setContexto(string $contexto): static
-     {
-         $this->contexto = $contexto;
-         return $this;
-     }
+    public function setContexto(string $contexto): static
+    {
+        $this->contexto = $contexto;
+
+        return $this;
+    }
 
     /**
      * Define os parâmetros da execução em formato XML.
      *
-     * @param string $paramXML XML contendo os parâmetros para a execução da fórmula.
-     * @return void
+     * @param  string  $paramXML  XML contendo os parâmetros para a execução da fórmula.
      */
     public function setParametersXML(string $paramXML): static
     {
         $this->paramXML = $paramXML;
+
         return $this;
     }
 
@@ -90,14 +92,15 @@ class FormulaVisual extends AbstractService
             'context' => $this->contexto,
             'dataSetXML' => null,
             'parametersXML' => $this->paramXML ?? null,
-            'ownerData' => null
+            'ownerData' => null,
         ];
+
         return (int) $this->callWebServiceMethod('Execute', $params);
     }
 
     private function requireSet(string $property, string $setter): void
     {
-        if (!isset($this->$property)) {
+        if (! isset($this->$property)) {
             throw new InvalidArgumentException(
                 sprintf('FormulaVisual: chame %s() antes de executar a operação.', $setter)
             );

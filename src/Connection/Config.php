@@ -8,7 +8,7 @@ namespace mateusfbi\TotvsRmSoap\Connection;
 final class Config
 {
     /**
-     * @param array<string, string> $companies Mapa coligada => URL base
+     * @param  array<string, string>  $companies  Mapa coligada => URL base
      */
     public function __construct(
         public readonly string $url,
@@ -27,7 +27,7 @@ final class Config
      * Chaves aceitas: url, user, pass, companies, connection_timeout,
      * verify_peer, verify_peer_name, allow_self_signed.
      *
-     * @param array<string, mixed> $config
+     * @param  array<string, mixed>  $config
      */
     public static function fromArray(array $config): self
     {
@@ -44,7 +44,7 @@ final class Config
     }
 
     /**
-     * @param array<string, string>|string|null $companies
+     * @param  array<string, string>|string|null  $companies
      * @return array<string, string>
      */
     public static function normalizeCompanies(array|string|null $companies): array
@@ -56,10 +56,12 @@ final class Config
         if (is_array($companies)) {
             $map = [];
             foreach ($companies as $code => $url) {
-                if ($code !== '' && $code !== null && $url !== '' && $url !== null) {
-                    $map[(string) $code] = (string) $url;
+                $code = (string) $code;
+                if ($code !== '' && is_scalar($url) && (string) $url !== '') {
+                    $map[$code] = (string) $url;
                 }
             }
+
             return $map;
         }
 
@@ -67,7 +69,7 @@ final class Config
         $pairs = array_filter(array_map('trim', explode(';', $companies)));
         foreach ($pairs as $pair) {
             [$code, $url] = array_map('trim', explode('|', $pair, 2)) + [null, null];
-            if (!empty($code) && !empty($url)) {
+            if (! empty($code) && ! empty($url)) {
                 $map[$code] = $url;
             }
         }

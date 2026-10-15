@@ -11,7 +11,7 @@ trait WebServiceCaller
      * Método auxiliar para chamar métodos do serviço web e tratar exceções.
      *
      * @param  string  $methodName  Nome do método a ser chamado no serviço web.
-     * @param  array  $params  Parâmetros a serem passados para o método.
+     * @param  array<string, mixed>  $params  Parâmetros a serem passados para o método.
      * @param  mixed  $defaultValue  Deprecated: mantido por compatibilidade, não é mais utilizado.
      * @return mixed O resultado da chamada do método.
      *
@@ -20,8 +20,7 @@ trait WebServiceCaller
     protected function callWebServiceMethod(string $methodName, array $params = [], $defaultValue = null)
     {
         try {
-            $client = method_exists($this, 'soap') ? $this->soap() : $this->webService;
-            $execute = $client->$methodName($params);
+            $execute = $this->soap()->$methodName($params);
             $resultProperty = $methodName.'Result';
 
             return $execute->$resultProperty;

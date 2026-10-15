@@ -2,6 +2,18 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [4.4.0] - 2026-10-15
+### Adicionado
+- `examples/php-puro.php` e `examples/laravel.php`; removidos os scripts de debug da raiz (`index.php`, `reports.php`, `parametros_debug.xml`).
+- `DataServer::readViewWith(ReadViewParams)` e `Record::get()/has()`.
+- Tooling: `laravel/pint`, `phpstan` (nível 6), workflow CI (PHP 8.2–8.4) e scripts `composer format/analyse/ci`.
+- `tests/Unit/RobustnessTest.php` com cobertura de DTO, fluência e robustez (39 testes).
+
+### Alterado
+- Estilo `laravel/pint` aplicado em todo o repo; tipos `array<string, mixed>`/`list<...>` documentados.
+- `WebServiceCaller` simplificado para `$this->soap()`; `Config::normalizeCompanies` trata chave int.
+- `README.md` com exemplos fluentes, DTO/`Record` e seção de qualidade.
+
 ## [4.3.0] - 2026-10-15
 ### Alterado
 - 27 setters `set*(): void` → `static` com `return $this` (`DataServer`, `ConsultaSQL`, `Report`, `Process`, `FormulaVisual`); encadeamento fluente liberado.

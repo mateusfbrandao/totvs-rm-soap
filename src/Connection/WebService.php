@@ -25,14 +25,14 @@ class WebService
     }
 
     /**
-     * @param string $path Caminho relativo do WSDL (ex.: /wsDataServer/MEX?wsdl)
+     * @param  string  $path  Caminho relativo do WSDL (ex.: /wsDataServer/MEX?wsdl)
      */
     public function getClient(string $path, ?string $companyCode = null): SoapClient
     {
         $this->config->assertValid();
 
         $baseUrl = $this->config->resolveBaseUrl($companyCode);
-        $url = rtrim($baseUrl, '/') . $path;
+        $url = rtrim($baseUrl, '/').$path;
 
         return $this->clients[$url] ??= $this->createSoapClient($url, $this->buildOptions());
     }
@@ -63,7 +63,7 @@ class WebService
     }
 
     /**
-     * @param array<string, mixed> $options
+     * @param  array<string, mixed>  $options
      */
     private function createSoapClient(string $url, array $options): SoapClient
     {

@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class WebServiceTest extends TestCase
 {
-    public function testStoresAndExposesConfig(): void
+    public function test_stores_and_exposes_config(): void
     {
         $config = new Config(
             url: 'http://rm.local:8051',
@@ -23,7 +23,7 @@ class WebServiceTest extends TestCase
         $this->assertSame('http://empresa01:8051', $webService->getConfig()->resolveBaseUrl('01'));
     }
 
-    public function testCanBeConstructedWithoutLaravelHelpers(): void
+    public function test_can_be_constructed_without_laravel_helpers(): void
     {
         $webService = new WebService(new Config(
             url: 'http://localhost',

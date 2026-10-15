@@ -16,8 +16,11 @@ use SoapClient;
 abstract class AbstractService
 {
     use WebServiceCaller;
+
     protected WebService $connection;
+
     protected ?SoapClient $soapClient = null;
+
     protected ?string $companyCode = null;
 
     /** Caminho relativo do WSDL (ex.: /wsDataServer/MEX?wsdl). */

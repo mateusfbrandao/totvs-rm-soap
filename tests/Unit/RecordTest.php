@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class RecordTest extends TestCase
 {
-    public function testAccessorsAndToArray(): void
+    public function test_accessors_and_to_array(): void
     {
         $record = new Record(['CODCOLIGADA' => '1', 'NOME' => 'Empresa']);
 

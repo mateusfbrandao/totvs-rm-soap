@@ -75,21 +75,37 @@ $config = new Config(
 
 $connection = new WebService($config);
 
-$ds = new DataServer($connection);
-$ds->setDataServer('GlbColigadaDataBR');
-$ds->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre');
-$ds->setFiltro('1=1');
-$result = $ds->readView();
+// API fluente
+$result = (new DataServer($connection))
+    ->setDataServer('GlbColigadaDataBR')
+    ->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre')
+    ->setFiltro('1=1')
+    ->readView();
 
-$sql = (new ConsultaSQL($connection))->forCompany('01');
-$sql->setSentenca('SENTENCA_EXEMPLO');
-$sql->setColigada(1);
-$sql->setSistema('G');
-$sql->setParametros(['P1' => 'VALOR']);
-$res = $sql->RealizarConsultaSQL();
+// Ou via DTO
+use mateusfbi\TotvsRmSoap\DataTransferObjects\ReadViewParams;
+
+$result = (new DataServer($connection))->readViewWith(new ReadViewParams(
+    dataServerName: 'GlbColigadaDataBR',
+    filter: '1=1',
+    context: 'CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre',
+));
+
+// Mapeando linhas para Records
+use mateusfbi\TotvsRmSoap\DataTransferObjects\Record;
+
+$records = array_map(fn (array $row) => new Record($row), $result['GlbColigada'] ?? []);
+$cod = $records[0]->get('CODCOLIGADA');
+
+$res = (new ConsultaSQL($connection))->forCompany('01')
+    ->setSentenca('SENTENCA_EXEMPLO')
+    ->setColigada(1)
+    ->setSistema('G')
+    ->setParametros(['P1' => 'VALOR'])
+    ->RealizarConsultaSQL();
 ```
 
-Há um exemplo em `index.php`.
+Exemplos executáveis em `examples/php-puro.php` e `examples/laravel.php`.
 
 ## Uso com Laravel
 
@@ -98,10 +114,11 @@ Há um exemplo em `index.php`.
 ```php
 use mateusfbi\TotvsRmSoap\Services\DataServer;
 
-$ds->setDataServer('GlbColigadaDataBR');
-$ds->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre');
-$ds->setFiltro('1=1');
-$result = $ds->readView();
+$result = $ds
+    ->setDataServer('GlbColigadaDataBR')
+    ->setContexto('CODSISTEMA=G;CODCOLIGADA=0;CODUSUARIO=mestre')
+    ->setFiltro('1=1')
+    ->readView();
 ```
 
 ### Helper `app()` / Facade
@@ -119,6 +136,12 @@ $ds = TotvsRM::dataServer()->forCompany('01');
 ```bash
 composer install
 composer test
+```
+
+Qualidade (Pint + PHPStan + testes, igual ao CI):
+
+```bash
+composer ci
 ```
 
 Integração (RM real):

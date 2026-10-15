@@ -1,0 +1,13 @@
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - src/Providers
+        - src/Facades
+        - src/config
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # DTO dinâmico via __get(): colunas variam por DataServer.
+        - '#Access to an undefined property mateusfbi\\TotvsRmSoap\\DataTransferObjects\\Record::\$[A-Z]+#'

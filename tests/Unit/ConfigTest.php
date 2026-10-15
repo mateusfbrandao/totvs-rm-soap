@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
-    public function testFromArrayMapsKnownKeysAndDefaults(): void
+    public function test_from_array_maps_known_keys_and_defaults(): void
     {
         $config = Config::fromArray([
             'url' => 'http://rm.local:8051',
@@ -25,7 +25,7 @@ class ConfigTest extends TestCase
         $this->assertFalse($config->allowSelfSigned);
     }
 
-    public function testFromArrayParsesBooleanStringsAndTimeout(): void
+    public function test_from_array_parses_boolean_strings_and_timeout(): void
     {
         $config = Config::fromArray([
             'url' => 'http://rm.local',
@@ -43,7 +43,7 @@ class ConfigTest extends TestCase
         $this->assertTrue($config->allowSelfSigned);
     }
 
-    public function testNormalizeCompaniesFromArray(): void
+    public function test_normalize_companies_from_array(): void
     {
         $map = Config::normalizeCompanies([
             '01' => 'http://a',
@@ -58,7 +58,7 @@ class ConfigTest extends TestCase
         ], $map);
     }
 
-    public function testNormalizeCompaniesFromEnvString(): void
+    public function test_normalize_companies_from_env_string(): void
     {
         $map = Config::normalizeCompanies(
             '01|http://rm-empresa01:8051;02|http://rm-empresa02:8051'
@@ -70,14 +70,14 @@ class ConfigTest extends TestCase
         ], $map);
     }
 
-    public function testNormalizeCompaniesEmptyValues(): void
+    public function test_normalize_companies_empty_values(): void
     {
         $this->assertSame([], Config::normalizeCompanies(null));
         $this->assertSame([], Config::normalizeCompanies(''));
         $this->assertSame([], Config::normalizeCompanies([]));
     }
 
-    public function testResolveBaseUrlUsesDefaultWhenCompanyMissing(): void
+    public function test_resolve_base_url_uses_default_when_company_missing(): void
     {
         $config = new Config(
             url: 'http://default:8051',
@@ -92,7 +92,7 @@ class ConfigTest extends TestCase
         $this->assertSame('http://empresa01:8051', $config->resolveBaseUrl('01'));
     }
 
-    public function testResolveBaseUrlWithoutCompaniesAlwaysReturnsDefault(): void
+    public function test_resolve_base_url_without_companies_always_returns_default(): void
     {
         $config = new Config(
             url: 'http://default:8051',
@@ -103,7 +103,7 @@ class ConfigTest extends TestCase
         $this->assertSame('http://default:8051', $config->resolveBaseUrl('01'));
     }
 
-    public function testFromArrayNormalizesCompaniesString(): void
+    public function test_from_array_normalizes_companies_string(): void
     {
         $config = Config::fromArray([
             'url' => 'http://default',
