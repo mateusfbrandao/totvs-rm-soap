@@ -2,9 +2,9 @@
 
 namespace mateusfbi\TotvsRmSoap\Services;
 
-use mateusfbi\TotvsRmSoap\Connection\WebService;
 use mateusfbi\TotvsRmSoap\Utils\Serialize;
-use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
+
+use InvalidArgumentException;
 
 /**
  * Classe ConsultaSQL
@@ -16,40 +16,13 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  * @package mateusfbi\TotvsRmSoap\Services
  */
 
-class ConsultaSQL
+class ConsultaSQL extends AbstractService
 {
-    use WebServiceCaller;
-
-    private WebService $connection;
-    private $webService;
-    private string $endpointPath = '/wsConsultaSQL/MEX?wsdl';
+    protected string $endpointPath = '/wsConsultaSQL/MEX?wsdl';
     private string $sentenca;
     private int $coligada;
     private string $sistema;
     private string $parametros;
-
-    /**
-     * Construtor da ConsultaSQL.
-     *
-     * Inicializa a instância da classe com a configuração do cliente SOAP
-     * para o endpoint de consulta SQL.
-     *
-     * @param WebService $webService Instância do serviço web utilizada para conectar ao endpoint SOAP.
-     */
-    public function __construct(WebService $webService)
-    {
-        $this->connection = $webService;
-        $this->webService = $webService->getClient($this->endpointPath);
-    }
-
-    /**
-     * Seleciona a empresa (coligada) para definir a URL base do serviço.
-     */
-    public function forCompany(string $companyCode): self
-    {
-        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
-        return $this;
-    }
 
     /**
      * Define a sentença SQL para a consulta.
@@ -118,13 +91,22 @@ class ConsultaSQL
      */
     public function RealizarConsultaSQL(): array
     {
+        if (!isset($this->sentenca)) {
+            throw new InvalidArgumentException('ConsultaSQL: chame setSentenca() antes de executar a operação.');
+        }
+        if (!isset($this->coligada)) {
+            throw new InvalidArgumentException('ConsultaSQL: chame setColigada() antes de executar a operação.');
+        }
+        if (!isset($this->sistema)) {
+            throw new InvalidArgumentException('ConsultaSQL: chame setSistema() antes de executar a operação.');
+        }
         $params = [
             'codSentenca' => $this->sentenca,
             'codColigada' => $this->coligada,
             'codSistema' => $this->sistema,
-            'parameters' => empty($this->parametros) ? null : $this->parametros,
+            'parameters' => isset($this->parametros) && $this->parametros !== '' ? $this->parametros : null,
         ];
-        $result = $this->callWebServiceMethod('RealizarConsultaSQL', $params, null);
+        $result = $this->callWebServiceMethod('RealizarConsultaSQL', $params);
         return ['response' => Serialize::result($result)['Resultado'] ?? false];
     }
 

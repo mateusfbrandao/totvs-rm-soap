@@ -2,9 +2,9 @@
 
 namespace mateusfbi\TotvsRmSoap\Services;
 
-use mateusfbi\TotvsRmSoap\Connection\WebService;
-use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
 use \DOMDocument;
+
+use InvalidArgumentException;
 
 /**
  * Classe Report
@@ -22,13 +22,9 @@ use \DOMDocument;
  * @package mateusfbi\TotvsRmSoap\Services
  */
 
-class Report
+class Report extends AbstractService
 {
-    use WebServiceCaller;
-
-    private WebService $connection;
-    private $webService;
-    private string $endpointPath = '/wsReport/MEX?wsdl';
+    protected string $endpointPath = '/wsReport/MEX?wsdl';
     private int $coligada;
     private int $id;
     private string $filtro;
@@ -38,28 +34,6 @@ class Report
     private int $offset;
     private int $length;
     private string $guid;
-
-    /**
-     * Construtor do Report.
-     *
-     * Inicializa a instância do Report com o cliente SOAP obtido do WebService.
-     *
-     * @param WebService $webService Instância do serviço web.
-     */
-    public function __construct(WebService $webService)
-    {
-        $this->connection = $webService;
-        $this->webService = $webService->getClient($this->endpointPath);
-    }
-
-    /**
-     * Seleciona a empresa (coligada) para definir a URL base do serviço.
-     */
-    public function forCompany(string $companyCode): self
-    {
-        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
-        return $this;
-    }
 
     /**
      * Define o código da coligada.
@@ -330,7 +304,8 @@ class Report
      */
     public function getReportList(): array
     {
-        $rawResult = $this->callWebServiceMethod('GetReportList', ['codColigada' => $this->coligada], '');
+        $this->requireSet('coligada', 'setColigada');
+        $rawResult = $this->callWebServiceMethod('GetReportList', ['codColigada' => $this->coligada]);
         $return = [];
 
         if (!empty($rawResult)) {
@@ -378,15 +353,19 @@ class Report
      */
     public function generateReport(): string
     {
+        $this->requireSet('coligada', 'setColigada');
+        $this->requireSet('id', 'setId');
+        $this->requireSet('nomeArquivo', 'setNomeArquivo');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'codColigada' => $this->coligada,
             'id'          => $this->id,
-            'filters'     => $this->filtro,
-            'parameters'  => $this->parametros,
+            'filters'     => $this->filtro ?? null,
+            'parameters'  => $this->parametros ?? null,
             'fileName'    => $this->nomeArquivo,
             'contexto'    => $this->contexto,
         ];
-        return $this->callWebServiceMethod('GenerateReport', $params, '');
+        return $this->callWebServiceMethod('GenerateReport', $params);
     }
 
     /**
@@ -398,15 +377,19 @@ class Report
      */
     public function generateReportAsynchronous(): string
     {
+        $this->requireSet('coligada', 'setColigada');
+        $this->requireSet('id', 'setId');
+        $this->requireSet('nomeArquivo', 'setNomeArquivo');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'codColigada' => $this->coligada,
             'id'          => $this->id,
-            'filters'     => $this->filtro,
-            'parameters'  => $this->parametros,
+            'filters'     => $this->filtro ?? null,
+            'parameters'  => $this->parametros ?? null,
             'fileName'    => $this->nomeArquivo,
             'contexto'    => $this->contexto,
         ];
-        return $this->callWebServiceMethod('GenerateReportAsynchronous', $params, '');
+        return $this->callWebServiceMethod('GenerateReportAsynchronous', $params);
     }
 
    /**
@@ -418,11 +401,13 @@ class Report
      */
     public function getReportMetaData(): string
     {
+        $this->requireSet('coligada', 'setColigada');
+        $this->requireSet('id', 'setId');
         $params = [
             'codColigada' => $this->coligada,
             'id'      => $this->id
         ];
-        return $this->callWebServiceMethod('GetReportMetaData', $params, '');
+        return $this->callWebServiceMethod('GetReportMetaData', $params);
     }
 
     /**
@@ -435,11 +420,13 @@ class Report
      */
     public function getReportInfo(): array
     {
+        $this->requireSet('coligada', 'setColigada');
+        $this->requireSet('id', 'setId');
         $params = [
             'codColigada'      => $this->coligada,
             'idReport'      => $this->id
         ];
-        $result = $this->callWebServiceMethod('GetReportInfo', $params, null);
+        $result = $this->callWebServiceMethod('GetReportInfo', $params);
         return isset($result->string) ? $result->string : [];
     }
 
@@ -453,10 +440,11 @@ class Report
      */
     public function getGeneratedReportStatus(): string
     {
+        $this->requireSet('guid', 'setGuid');
         $params = [
             'id'      => $this->guid
         ];
-        return $this->callWebServiceMethod('GetGeneratedReportStatus', $params, '');
+        return $this->callWebServiceMethod('GetGeneratedReportStatus', $params);
     }
 
     /**
@@ -468,10 +456,11 @@ class Report
      */
     public function getGeneratedReportSize(): int
     {
+        $this->requireSet('guid', 'setGuid');
         $params = [
             'guid'      => $this->guid
         ];
-        return (int) $this->callWebServiceMethod('GetGeneratedReportSize', $params, 0);
+        return (int) $this->callWebServiceMethod('GetGeneratedReportSize', $params);
     }
 
     /**
@@ -483,10 +472,11 @@ class Report
      */
     public function getFileHash(): string
     {
+        $this->requireSet('guid', 'setGuid');
         $params = [
             'guid'      => $this->guid
         ];
-        return $this->callWebServiceMethod('GetFileHash', $params, '');
+        return $this->callWebServiceMethod('GetFileHash', $params);
     }
 
     /**
@@ -498,11 +488,23 @@ class Report
      */
     public function getFileChunk(): string
     {
+        $this->requireSet('guid', 'setGuid');
+        $this->requireSet('offset', 'setOffset');
+        $this->requireSet('length', 'setLength');
         $params = [
             'guid'      => $this->guid,
             'offset'      => $this->offset,
             'length'      => $this->length
         ];
-        return $this->callWebServiceMethod('GetFileChunk', $params, '');
+        return $this->callWebServiceMethod('GetFileChunk', $params);
+    }
+
+    private function requireSet(string $property, string $setter): void
+    {
+        if (!isset($this->$property)) {
+            throw new InvalidArgumentException(
+                sprintf('Report: chame %s() antes de executar a operação.', $setter)
+            );
+        }
     }
 }

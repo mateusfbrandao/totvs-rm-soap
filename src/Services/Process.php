@@ -2,8 +2,7 @@
 
 namespace mateusfbi\TotvsRmSoap\Services;
 
-use mateusfbi\TotvsRmSoap\Connection\WebService;
-use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
+use InvalidArgumentException;
 
 /**
  * Classe Process
@@ -16,40 +15,13 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  *
  * @package mateusfbi\TotvsRmSoap\Services
  */
-class Process
+class Process extends AbstractService
 {
-    use WebServiceCaller;
-
-    private WebService $connection;
-    private $webService;
-    private string $endpointPath = '/wsProcess/MEX?wsdl';
+    protected string $endpointPath = '/wsProcess/MEX?wsdl';
     private string $process;
     private string $xml;
     private string $jobId;
     private string $execId;
-
-    /**
-     * Construtor do Process.
-     *
-     * Inicializa a instância de Process com o cliente SOAP configurado
-     * para se comunicar com o endpoint do serviço.
-     *
-     * @param WebService $webService Instância do serviço web.
-     */
-    public function __construct(WebService $webService)
-    {
-        $this->connection = $webService;
-        $this->webService = $webService->getClient($this->endpointPath);
-    }
-
-    /**
-     * Seleciona a empresa (coligada) para definir a URL base do serviço.
-     */
-    public function forCompany(string $companyCode): self
-    {
-        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
-        return $this;
-    }
 
     /**
      * Define o nome do processo que será executado.
@@ -105,11 +77,13 @@ class Process
      */
     public function executeWithXmlParams(): int
     {
+        $this->requireSet('process', 'setProcess');
+        $this->requireSet('xml', 'setXML');
         $params = [
             'ProcessServerName' => $this->process,
             'strXmlParams'      => $this->xml
         ];
-        return (int) $this->callWebServiceMethod('ExecuteWithXmlParams', $params, 0);
+        return (int) $this->callWebServiceMethod('ExecuteWithXmlParams', $params);
     }
 
     /**
@@ -122,11 +96,13 @@ class Process
      */
     public function ExecuteWithParams(): int
     {
+        $this->requireSet('process', 'setProcess');
+        $this->requireSet('xml', 'setXML');
         $params = [
             'ProcessServerName' => $this->process,
             'strXmlParams'      => $this->xml
         ];
-        return (int) $this->callWebServiceMethod('ExecuteWithParams', $params, 0);
+        return (int) $this->callWebServiceMethod('ExecuteWithParams', $params);
     }
 
     /**
@@ -138,10 +114,21 @@ class Process
      */
     public function getProcessStatus(): int
     {
+        $this->requireSet('jobId', 'setJobId');
+        $this->requireSet('execId', 'setExecId');
         $params = [
             'jobId'  => $this->jobId,
             'execId' => $this->execId
         ];
-        return (int) $this->callWebServiceMethod('getProcessStatus', $params, 0);
+        return (int) $this->callWebServiceMethod('getProcessStatus', $params);
+    }
+
+    private function requireSet(string $property, string $setter): void
+    {
+        if (!isset($this->$property)) {
+            throw new InvalidArgumentException(
+                sprintf('Process: chame %s() antes de executar a operação.', $setter)
+            );
+        }
     }
 }

@@ -2,8 +2,7 @@
 
 namespace mateusfbi\TotvsRmSoap\Services;
 
-use mateusfbi\TotvsRmSoap\Connection\WebService;
-use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
+use InvalidArgumentException;
 
 /**
  * Classe FormulaVisual
@@ -14,40 +13,13 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  *
  * @package mateusfbi\TotvsRmSoap\Services
  */
-class FormulaVisual
+class FormulaVisual extends AbstractService
 {
-    use WebServiceCaller;
-
-    private WebService $connection;
-    private $webService;
-    private string $endpointPath = '/wsFormulaVisual/MEX?wsdl';
+    protected string $endpointPath = '/wsFormulaVisual/MEX?wsdl';
     private string $idFormula;
     private int $coligada;
     private string $contexto;
     private string $paramXML;
-
-    /**
-     * Construtor da FormulaVisual.
-     *
-     * Inicializa o cliente SOAP configurado para se comunicar com o endpoint
-     * necessário para a execução de fórmulas visuais.
-     *
-     * @param WebService $webService Instância do serviço web utilizada para obter o cliente SOAP.
-     */
-    public function __construct(WebService $webService)
-    {
-        $this->connection = $webService;
-        $this->webService = $webService->getClient($this->endpointPath);
-    }
-
-    /**
-     * Seleciona a empresa (coligada) para definir a URL base do serviço.
-     */
-    public function forCompany(string $companyCode): self
-    {
-        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
-        return $this;
-    }
 
     /**
      * Define a fórmula a ser executada.
@@ -105,14 +77,26 @@ class FormulaVisual
      */
     public function execute(): int
     {
+        $this->requireSet('coligada', 'setColigada');
+        $this->requireSet('idFormula', 'setFormula');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'codColigada' => $this->coligada,
             'idFormula' => $this->idFormula,
             'context' => $this->contexto,
             'dataSetXML' => null,
-            'parametersXML' => $this->paramXML,
+            'parametersXML' => $this->paramXML ?? null,
             'ownerData' => null
         ];
-        return (int) $this->callWebServiceMethod('Execute', $params, 0);
+        return (int) $this->callWebServiceMethod('Execute', $params);
+    }
+
+    private function requireSet(string $property, string $setter): void
+    {
+        if (!isset($this->$property)) {
+            throw new InvalidArgumentException(
+                sprintf('FormulaVisual: chame %s() antes de executar a operação.', $setter)
+            );
+        }
     }
 }

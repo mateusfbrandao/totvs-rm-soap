@@ -2,9 +2,9 @@
 
 namespace mateusfbi\TotvsRmSoap\Services;
 
-use mateusfbi\TotvsRmSoap\Connection\WebService;
 use mateusfbi\TotvsRmSoap\Utils\Serialize;
-use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
+
+use InvalidArgumentException;
 
 /**
  * Classe DataServer
@@ -15,40 +15,14 @@ use mateusfbi\TotvsRmSoap\Traits\WebServiceCaller;
  *
  * @package mateusfbi\TotvsRmSoap\Services
  */
-class DataServer
+class DataServer extends AbstractService
 {
-    use WebServiceCaller;
-
-    private WebService $connection;
-    private $webService;
-    private string $endpointPath = '/wsDataServer/MEX?wsdl';
+    protected string $endpointPath = '/wsDataServer/MEX?wsdl';
     private string $dataServer;
     private string $primaryKey;
     private string $contexto;
     private string $filtro;
     private string $xml;
-
-    /**
-     * Construtor do DataServer.
-     *
-     * Inicializa a instância do DataServer com o cliente SOAP obtido do WebService.
-     *
-     * @param WebService $webService Instância do serviço web.
-     */
-    public function __construct(WebService $webService)
-    {
-        $this->connection = $webService;
-        $this->webService = $webService->getClient($this->endpointPath);
-    }
-
-    /**
-     * Seleciona a empresa (coligada) para definir a URL base do serviço.
-     */
-    public function forCompany(string $companyCode): self
-    {
-        $this->webService = $this->connection->getClient($this->endpointPath, $companyCode);
-        return $this;
-    }
 
     /**
      * Define o DataServer a ser utilizado.
@@ -190,12 +164,15 @@ class DataServer
      */
     public function saveRecord(): string
     {
+        $this->requireSet('dataServer', 'setDataServer');
+        $this->requireSet('xml', 'setXML/setXMLFromArray');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'DataServerName'    => $this->dataServer,
             'XML'               => $this->xml,
             'Contexto'          => $this->contexto
         ];
-        return $this->callWebServiceMethod('SaveRecord', $params, '');
+        return $this->callWebServiceMethod('SaveRecord', $params);
     }
 
     /**
@@ -205,12 +182,15 @@ class DataServer
      */
     public function readRecord(): array
     {
+        $this->requireSet('dataServer', 'setDataServer');
+        $this->requireSet('primaryKey', 'setPrimaryKey');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'DataServerName'    => $this->dataServer,
             'PrimaryKey'        => $this->primaryKey,
             'Contexto'          => $this->contexto
         ];
-        $result = $this->callWebServiceMethod('ReadRecord', $params, null);
+        $result = $this->callWebServiceMethod('ReadRecord', $params);
         return Serialize::result($result);
     }
 
@@ -224,12 +204,14 @@ class DataServer
      */
     public function readView(): array
     {
+        $this->requireSet('dataServer', 'setDataServer');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'DataServerName'    => $this->dataServer,
-            'Filtro'            => $this->filtro,
+            'Filtro'            => $this->filtro ?? '',
             'Contexto'          => $this->contexto
         ];
-        $result = $this->callWebServiceMethod('ReadView', $params, null);
+        $result = $this->callWebServiceMethod('ReadView', $params);
         return Serialize::result($result);
     }
 
@@ -242,12 +224,15 @@ class DataServer
      */
     public function deleteRecord(): int
     {
+        $this->requireSet('dataServer', 'setDataServer');
+        $this->requireSet('xml', 'setXML/setXMLFromArray');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'DataServerName'    => $this->dataServer,
             'XML'               => $this->xml,
             'Contexto'          => $this->contexto
         ];
-        return (int) $this->callWebServiceMethod('DeleteRecord', $params, 0);
+        return (int) $this->callWebServiceMethod('DeleteRecord', $params);
     }
 
     /**
@@ -259,13 +244,25 @@ class DataServer
      */
     public function deleteRecordByKey(): array
     {
+        $this->requireSet('dataServer', 'setDataServer');
+        $this->requireSet('primaryKey', 'setPrimaryKey');
+        $this->requireSet('contexto', 'setContexto');
         $params = [
             'DataServerName'    => $this->dataServer,
             'PrimaryKey'        => $this->primaryKey,
             'Contexto'          => $this->contexto,
         ];
-        $result = $this->callWebServiceMethod('DeleteRecordByKey', $params, null);
+        $result = $this->callWebServiceMethod('DeleteRecordByKey', $params);
         return Serialize::result($result);
+    }
+
+    private function requireSet(string $property, string $setter): void
+    {
+        if (!isset($this->$property)) {
+            throw new InvalidArgumentException(
+                sprintf('DataServer: chame %s() antes de executar a operação.', $setter)
+            );
+        }
     }
 
 
