@@ -84,6 +84,48 @@ final class Config
         return $this->companies[$companyCode] ?? $this->url;
     }
 
+    /**
+     * Valida a configuração antes de abrir conexão (fail-fast com mensagem clara).
+     * Não é chamada no construtor de propósito: permite boot do Laravel/testes
+     * sem credenciais, falhando apenas no primeiro uso real.
+     *
+     * @throws \InvalidArgumentException Quando url/user/pass/timeout são inválidos.
+     */
+    public function assertValid(): void
+    {
+        if (trim($this->url) === '') {
+            throw new \InvalidArgumentException('TotvsRmSoap: URL base (TOTVSRM_WSURL) não configurada.');
+        }
+        if (trim($this->user) === '') {
+            throw new \InvalidArgumentException('TotvsRmSoap: usuário (TOTVSRM_USER) não configurado.');
+        }
+        if ($this->pass === '') {
+            throw new \InvalidArgumentException('TotvsRmSoap: senha (TOTVSRM_PASS) não configurada.');
+        }
+        if ($this->connectionTimeout <= 0) {
+            throw new \InvalidArgumentException('TotvsRmSoap: connection_timeout deve ser maior que zero.');
+        }
+    }
+
+    /**
+     * Evita vazar a senha em var_dump/logs.
+     *
+     * @return array<string, mixed>
+     */
+    public function __debugInfo(): array
+    {
+        return [
+            'url' => $this->url,
+            'user' => $this->user,
+            'pass' => '***',
+            'companies' => $this->companies,
+            'connectionTimeout' => $this->connectionTimeout,
+            'verifyPeer' => $this->verifyPeer,
+            'verifyPeerName' => $this->verifyPeerName,
+            'allowSelfSigned' => $this->allowSelfSigned,
+        ];
+    }
+
     private static function toBool(mixed $value): bool
     {
         if (is_bool($value)) {

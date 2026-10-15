@@ -12,6 +12,9 @@ use SoapClient;
  */
 class WebService
 {
+    /** @var array<string, SoapClient> Cache por URL+path para evitar refetch do WSDL. */
+    private array $clients = [];
+
     public function __construct(
         private readonly Config $config
     ) {}
@@ -26,10 +29,20 @@ class WebService
      */
     public function getClient(string $path, ?string $companyCode = null): SoapClient
     {
+        $this->config->assertValid();
+
         $baseUrl = $this->config->resolveBaseUrl($companyCode);
         $url = rtrim($baseUrl, '/') . $path;
 
-        $options = [
+        return $this->clients[$url] ??= $this->createSoapClient($url, $this->buildOptions());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildOptions(): array
+    {
+        return [
             'login' => $this->config->user,
             'password' => $this->config->pass,
             'authentication' => SOAP_AUTHENTICATION_BASIC,
@@ -47,8 +60,6 @@ class WebService
                 ],
             ]),
         ];
-
-        return $this->createSoapClient($url, $options);
     }
 
     /**
@@ -58,7 +69,7 @@ class WebService
     {
         try {
             return new SoapClient($url, $options);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             throw ConnectionException::forUrl($url, $e->getMessage());
         }
     }

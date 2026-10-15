@@ -94,6 +94,8 @@ class DataServer extends AbstractService
             throw new \InvalidArgumentException('Root não informado');
         }
 
+        self::assertValidTagName((string) $xmlArray['root']);
+
         $dom = new \DOMDocument('1.0', 'utf-8');
         $dom->formatOutput = true;
 
@@ -104,7 +106,12 @@ class DataServer extends AbstractService
             $this->appendTabela($dom, $root, $xmlArray['TABELA']);
         }
 
-        $this->xml = $dom->saveXML();
+        $xml = $dom->saveXML();
+        if ($xml === false) {
+            throw new \InvalidArgumentException('DataServer: falha ao gerar o XML.');
+        }
+
+        $this->xml = $xml;
     }
 
     /**
@@ -114,6 +121,10 @@ class DataServer extends AbstractService
      */
     public function getXML(): string
     {
+        if (!isset($this->xml)) {
+            throw new \InvalidArgumentException('DataServer: XML não definido. Use setXML() ou setXMLFromArray().');
+        }
+
         return $this->xml;
     }
 
@@ -123,10 +134,16 @@ class DataServer extends AbstractService
         array $tabela
     ): void {
         foreach ($tabela as $tag => $conteudo) {
+            self::assertValidTagName((string) $tag);
 
             // Nó repetível
             if (is_array($conteudo) && array_is_list($conteudo)) {
                 foreach ($conteudo as $item) {
+                    if (!is_array($item)) {
+                        throw new \InvalidArgumentException(
+                            sprintf("DataServer: item da tabela '%s' deve ser um array associativo.", $tag)
+                        );
+                    }
                     $node = $dom->createElement($tag);
                     $this->appendCampos($dom, $node, $item);
                     $parent->appendChild($node);
@@ -149,8 +166,23 @@ class DataServer extends AbstractService
         array $campos
     ): void {
         foreach ($campos as $campo => $valor) {
-            $parent->appendChild(
-                $dom->createElement($campo, (string)$valor)
+            self::assertValidTagName((string) $campo);
+            if (is_array($valor) || is_object($valor)) {
+                throw new \InvalidArgumentException(
+                    sprintf("DataServer: valor do campo '%s' deve ser escalar, recebido %s.", $campo, get_debug_type($valor))
+                );
+            }
+            // createTextNode escapa &<>, ao contrário de createElement($name, $value).
+            $parent->appendChild($dom->createElement($campo))
+                ->appendChild($dom->createTextNode((string) $valor));
+        }
+    }
+
+    private static function assertValidTagName(string $tag): void
+    {
+        if (!preg_match('/^[A-Za-z_][A-Za-z0-9_.-]*$/', $tag)) {
+            throw new \InvalidArgumentException(
+                sprintf("DataServer: nome de tag XML inválido '%s'.", $tag)
             );
         }
     }

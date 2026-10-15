@@ -63,6 +63,10 @@ class ConsultaSQL extends AbstractService
      * Recebe um array associativo onde cada par chave-valor é convertido em uma string
      * no formato "chave=valor". Todos os parâmetros são então unidos por ponto e vírgula.
      *
+     * Valores escalares são convertidos para string (bool vira 1/0). Chaves vazias
+     * ou contendo ';'/'=' e valores contendo ';' lançam exceção, pois corromperiam
+     * o protocolo "P1=V1;P2=V2" do RM.
+     *
      * @param array $params Array associativo com os parâmetros adicionais.
      * @return void
      */
@@ -71,7 +75,25 @@ class ConsultaSQL extends AbstractService
         $array = [];
 
         foreach ($params as $key => $value) {
-            $array[] = "{$key}={$value}";
+            $name = (string) $key;
+            if ($name === '' || str_contains($name, ';') || str_contains($name, '=')) {
+                throw new InvalidArgumentException(
+                    sprintf("ConsultaSQL: nome de parâmetro inválido '%s'.", $name)
+                );
+            }
+            if (is_array($value) || is_object($value)) {
+                throw new InvalidArgumentException(
+                    sprintf("ConsultaSQL: valor do parâmetro '%s' deve ser escalar.", $name)
+                );
+            }
+            $text = is_bool($value) ? ($value ? '1' : '0') : (string) $value;
+            if (str_contains($text, ';')) {
+                throw new InvalidArgumentException(
+                    sprintf("ConsultaSQL: valor do parâmetro '%s' não pode conter ';'.", $name)
+                );
+            }
+
+            $array[] = "{$name}={$text}";
         }
 
         $this->parametros = implode(';', $array);

@@ -2,6 +2,20 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [4.2.0] - 2026-10-15
+### Adicionado
+- `Config::assertValid()` (fail-fast no primeiro uso, sem quebrar boot sem env) e `__debugInfo()` ocultando `pass`.
+- Cache de `SoapClient` por URL+path em `WebService::getClient()`.
+- `Report::parseReportList()` extraído e testável.
+- Suite `tests/Unit/RobustnessTest.php` (15 testes).
+
+### Alterado
+- `Utils\Serialize::result()` só retorna `[]` para vazio; XML inválido/tipo inesperado lança `UnexpectedValueException` com detalhes do libxml.
+- Escaping XML via `createTextNode` em `DataServer` e `Report` (valores com `&<>` agora geram XML válido).
+- Validações `InvalidArgumentException`: tags XML, `ConsultaSQL::setParametros` (chave sem `;`/`=`, valor escalar sem `;`), `Report` (`Type` em String/Int16/Int32/DateTime, `DateTime` ISO 8601, chaves obrigatórias).
+- `Report::getReportList()` desembrulha `s:N:"...";` dos dois lados, `nome` com vírgula reconstruído com `,` fiel, malformados ignorados sem `error_log`.
+- `WebService::createSoapClient()` captura `\Throwable`.
+
 ## [4.1.0] - 2026-10-15
 ### Adicionado
 - `Services\AbstractService`: base com `SoapClient` lazy, `forCompany()` sem rede, `setSoapClient()`/`getCompanyCode()` para testes.
