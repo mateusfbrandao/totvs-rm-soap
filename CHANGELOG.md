@@ -2,6 +2,16 @@
 
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
+## [4.1.0] - 2026-10-15
+### Adicionado
+- `Services\AbstractService`: base com `SoapClient` lazy, `forCompany()` sem rede, `setSoapClient()`/`getCompanyCode()` para testes.
+- `LICENSE` MIT.
+- Validação de campos obrigatórios com `InvalidArgumentException` em `DataServer`, `ConsultaSQL`, `Report`, `Process` e `FormulaVisual`.
+
+### Alterado
+- `SoapClient` criado apenas no primeiro uso (antes era no `__construct`/`forCompany`). Falhas de conexão agora ocorrem na chamada SOAP, não na construção.
+- `Traits\WebServiceCaller`: visibilidade `protected`, mensagem com `static::class`, `catch (Throwable)` com repasse de `ConnectionException`, `$defaultValue` deprecated (ignorado).
+
 ## [4.0.0] - 2026-10-07
 ### Alterado
 - A configuração de conexão agora é `mateusfbi\TotvsRmSoap\Connection\Config`. O arquivo publicado do Laravel continua em `src/config/totvsrmsoap.php`.
