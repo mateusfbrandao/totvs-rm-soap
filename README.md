@@ -13,7 +13,7 @@ Biblioteca PHP para integração SOAP com o TOTVS RM. Funciona com **Laravel** (
 
 ## Requisitos
 
-- PHP 8.2 ou superior
+- PHP 8.3 ou superior
 - Extensões SOAP e XML do PHP
 - Composer
 - Laravel (opcional — apenas se for usar Provider/Facade)
@@ -167,7 +167,7 @@ composer test:integration
 
 | Versão | PHP | Status |
 | --- | --- | --- |
-| 4.x | ^8.2 | Mantida |
+| 4.x | ^8.3 | Mantida |
 | 3.x e anteriores | — | Descontinuadas, atualize pela [migração](docs/MIGRATION.md) |
 
 Encontrou um bug? Abra uma issue em
